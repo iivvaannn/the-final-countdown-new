@@ -1,20 +1,23 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
 
 public class zombiecontroller : MonoBehaviour
 {
-    public Animator anim;
-    public Transform player;
-    public float moveSpeed = 1.5f;
-    public float attackRange = 2f;
-    public float attackCooldown = 2f;
-    public float attackDamage = 10f;   // damage per attack
-    public float attackDelay = 0.5f;   // time before applying damage to match animation
+    public Animator anim;            // Zombie Animator
+    public Transform player;         // Spelaren
+    public float attackRange = 2f;   // När attack ska börja
+    public float attackCooldown = 2f;// Tid mellan attacker
+    public float attackDamage = 10f; // Skada per attack
+    public float attackDelay = 0.5f; // När i animation skadan sker
 
+    private NavMeshAgent agent;
     private bool isAttacking = false;
 
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
+
         if (anim == null)
             anim = GetComponentInChildren<Animator>();
 
@@ -23,8 +26,6 @@ public class zombiecontroller : MonoBehaviour
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
-
-        anim.SetBool("isMove", false); // start idle
     }
 
     void Update()
@@ -35,22 +36,14 @@ public class zombiecontroller : MonoBehaviour
 
         if (!isAttacking && dist > attackRange)
         {
-            // Walk toward player
-            Vector3 dir = (player.position - transform.position).normalized;
-            dir.y = 0f;
-            transform.position += dir * moveSpeed * Time.deltaTime;
-
-            // Rotate toward player
-            if (dir.sqrMagnitude > 0.01f)
-            {
-                Quaternion rot = Quaternion.LookRotation(dir);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rot, 8f * Time.deltaTime);
-            }
-
-            anim.SetBool("isMove", true); // play Walk
+            // Följ spelaren med NavMeshAgent
+            agent.isStopped = false;
+            agent.SetDestination(player.position);
+            anim.SetBool("isMove", true);
         }
         else if (!isAttacking && dist <= attackRange)
         {
+            // Attackera
             StartCoroutine(AttackRoutine());
         }
     }
@@ -58,14 +51,14 @@ public class zombiecontroller : MonoBehaviour
     IEnumerator AttackRoutine()
     {
         isAttacking = true;
+        agent.isStopped = true;           // Stoppa agent under attack
+        anim.SetBool("isMove", false);    // Stoppa Walk animation
+        anim.SetTrigger("Attack");        // Spela Attack animation
 
-        anim.SetBool("isMove", false);   // stop walking
-        anim.SetTrigger("Attack");       // play Attack animation
-
-        // Wait until approx. the "hit" frame
+        // Vänta tills attacken ska träffa
         yield return new WaitForSeconds(attackDelay);
 
-        // Apply damage
+        // Applicera skada på spelaren
         if (player != null)
         {
             PlayerHealth ph = player.GetComponent<PlayerHealth>();
@@ -76,9 +69,8 @@ public class zombiecontroller : MonoBehaviour
             }
         }
 
-        // Wait for cooldown before next attack
+        // Vänta cooldown innan nästa attack
         yield return new WaitForSeconds(attackCooldown - attackDelay);
-
         isAttacking = false;
     }
 }
