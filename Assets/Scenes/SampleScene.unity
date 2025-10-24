@@ -5504,6 +5504,7 @@ MonoBehaviour:
   damage: 10
   range: 100
   fpsCam: {fileID: 963194227}
+  shootSound: {fileID: 8300000, guid: 8335480d573973343baa56d61ea40954, type: 3}
 --- !u!1 &1107904741
 GameObject:
   m_ObjectHideFlags: 0
