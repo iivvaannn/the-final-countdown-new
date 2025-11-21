@@ -16,8 +16,12 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
+<<<<<<< HEAD
     rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
       human bone 'Hips' not found\n"
+=======
+    rigImportErrors: 
+>>>>>>> 59cd804e0dbb89f8cfc49ca123bc11c6c5dce868
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -38,7 +42,11 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
+<<<<<<< HEAD
     addColliders: 1
+=======
+    addColliders: 0
+>>>>>>> 59cd804e0dbb89f8cfc49ca123bc11c6c5dce868
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
     importPhysicalCameras: 1
@@ -51,7 +59,11 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
+<<<<<<< HEAD
     keepQuads: 1
+=======
+    keepQuads: 0
+>>>>>>> 59cd804e0dbb89f8cfc49ca123bc11c6c5dce868
     weldVertices: 1
     bakeAxisConversion: 0
     preserveHierarchy: 0
@@ -71,11 +83,19 @@ ModelImporter:
     useFileScale: 1
     strictVertexDataChecks: 0
   tangentSpace:
+<<<<<<< HEAD
     normalSmoothAngle: 0
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 2
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+=======
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+>>>>>>> 59cd804e0dbb89f8cfc49ca123bc11c6c5dce868
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
@@ -83,6 +103,7 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
+<<<<<<< HEAD
     skeleton:
     - name: zaton(Clone)
       parentName: 
@@ -10699,6 +10720,9 @@ ModelImporter:
       position: {x: -0, y: 0, z: 0}
       rotation: {x: -0.000000030719534, y: 0.7071068, z: 0.7071068, w: 0.000000030719534}
       scale: {x: 100, y: 100, z: 100}
+=======
+    skeleton: []
+>>>>>>> 59cd804e0dbb89f8cfc49ca123bc11c6c5dce868
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -10709,11 +10733,19 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+<<<<<<< HEAD
     hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 1
+=======
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+>>>>>>> 59cd804e0dbb89f8cfc49ca123bc11c6c5dce868
   humanoidOversampling: 1
   avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
