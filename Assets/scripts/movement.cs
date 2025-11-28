@@ -81,6 +81,8 @@ public class Movement : MonoBehaviour
 
         Vector3 velocity = (transform.forward * currentDir.y + transform.right * currentDir.x) * realSpeed + Vector3.up * velocityY;
 
+        //animator.SetFloat("Speed") == Speed;
+
         controller.Move(velocity * Time.deltaTime);
 
         if (isGrounded && Input.GetButtonDown("Jump"))

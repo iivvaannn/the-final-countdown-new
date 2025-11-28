@@ -83,8 +83,8 @@ public class Gun : MonoBehaviour
                 hit.rigidbody.AddForce(-hit.normal * impactForce);
             }
 
-            GameObject impactOG = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            Destroy(impactOG, 2f);
+            //GameObject impactOG = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+            //Destroy(impactOG, 2f);
         }
     }
 
