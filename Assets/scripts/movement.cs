@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Movement : MonoBehaviour
 {
     [SerializeField] Transform playerCamera;
@@ -14,6 +13,8 @@ public class Movement : MonoBehaviour
     [SerializeField] float gravity = -30f;
     [SerializeField] Transform groundCheck;
     [SerializeField] LayerMask ground;
+
+    [SerializeField] Animator animator;   // <-- LAGT TILL (behövs för animationer)
 
     public float jumpHeight = 6f;
     float velocityY;
@@ -71,7 +72,14 @@ public class Movement : MonoBehaviour
 
         velocityY += gravity * 2f * Time.deltaTime;
 
-        Vector3 velocity = (transform.forward * currentDir.y + transform.right * currentDir.x) * Speed + Vector3.up * velocityY;
+        // --- SPRINT SPEED (endast tillägg, ändrar inget annat) ---
+        float realSpeed = Speed;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            realSpeed = Speed * 1.6f;
+        }
+
+        Vector3 velocity = (transform.forward * currentDir.y + transform.right * currentDir.x) * realSpeed + Vector3.up * velocityY;
 
         controller.Move(velocity * Time.deltaTime);
 
@@ -80,9 +88,30 @@ public class Movement : MonoBehaviour
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        if (isGrounded! && controller.velocity.y < -1f)
+        if (isGrounded && controller.velocity.y < -1f)
         {
             velocityY = -8f;
+        }
+
+        // -------------------------------------------------------
+        // ----------------- ANIMATION SYSTEM --------------------
+        // -------------------------------------------------------
+
+        // Beräknar horizontal rörelse
+        Vector3 flatVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
+        float currentSpeed = flatVelocity.magnitude;
+
+        if (currentSpeed < 0.1f)
+        {
+            animator.SetFloat("Speed", 0f);        // Idle
+        }
+        else if (!Input.GetKey(KeyCode.LeftShift))
+        {
+            animator.SetFloat("Speed", 0.5f);      // Walk
+        }
+        else
+        {
+            animator.SetFloat("Speed", 1f);        // Run
         }
     }
 }

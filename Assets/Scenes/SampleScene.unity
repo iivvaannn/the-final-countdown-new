@@ -301,6 +301,7 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 64
+  animator: {fileID: 330806566}
   jumpHeight: 4
 --- !u!4 &330806563 stripped
 Transform:
@@ -322,6 +323,11 @@ MonoBehaviour:
   healthFill: {fileID: 0}
   maxHealth: 100
   currentHealth: 100
+--- !u!95 &330806566 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
+  m_PrefabInstance: {fileID: 1882390018}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &482638607 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 996caac4a811a084eaa842721fa451ae, type: 3}
@@ -14539,6 +14545,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b65d9ced80b3cff4ea2f173395e943b0, type: 2}
     - target: {fileID: 8526037475074246931, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0
