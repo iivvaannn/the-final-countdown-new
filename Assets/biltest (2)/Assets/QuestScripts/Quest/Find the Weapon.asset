@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a78d8520e995bd4fbbcefa21b5e7bb3, type: 3}
+  m_Name: Find the Weapon
+  m_EditorClassIdentifier: 
+  questName: Find the Weapon
+  description: "G\xE5 till m\xE5lplatsen och hitta vapen"
+  isCompleted: 1
+  targetPosition: {x: -9.8, y: 0.98, z: 9.92}
+  goldReward: 0
