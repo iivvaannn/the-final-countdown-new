@@ -639,6 +639,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: arms@ak
       objectReference: {fileID: 0}
+    - target: {fileID: 2842676096015642902, guid: 996caac4a811a084eaa842721fa451ae, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
