@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -27,17 +28,11 @@ public class PlayerHealth : MonoBehaviour
         // Check for death
         if (currentHealth <= 0)
         {
-            Die();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 
-    private void Die()
-    {
-        Debug.Log("Player has died!");
-        // Optionally: stop the game
-        Time.timeScale = 0f; // freezes the game
-        // Or trigger your Game Over screen
-    }
+   
 
     // Funktion för att läka
     public void Heal(float amount)
