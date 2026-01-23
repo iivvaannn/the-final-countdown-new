@@ -889,7 +889,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -720, y: -421}
+  m_AnchoredPosition: {x: -215, y: -131}
   m_SizeDelta: {x: 457, y: 66}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &490793797
@@ -7141,6 +7141,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1748905282}
     m_Modifications:
+    - target: {fileID: -8700617353114198275, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.22609998
@@ -7193,6 +7197,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6722085885383957590, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 0.214
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
       propertyPath: m_Name
       value: Shotgun 6
@@ -7204,6 +7212,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 65702495048144492, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
+    - {fileID: -8700617353114198275, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2d049ca7dbd4e0143809ef675b83fd36, type: 3}
@@ -7690,7 +7699,7 @@ RectTransform:
   m_GameObject: {fileID: 1400991736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.030494, y: 0.18020675, z: 1.0059}
+  m_LocalScale: {x: 2.030494, y: 0.19184595, z: 1.0059}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 293053081}
@@ -7701,7 +7710,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -718, y: 449}
+  m_AnchoredPosition: {x: -209, y: 161.21}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1400991738
