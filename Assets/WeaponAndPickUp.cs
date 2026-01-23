@@ -1,60 +1,88 @@
 using UnityEngine;
 
-public class WeaponPickupAndDrop : MonoBehaviour
+public class WeaponAndPickUp: MonoBehaviour
 {
     public Camera playerCamera;
-    public GameObject armsakPrefab;      // Armsak med armar + WeaponPoint
-    public Transform weaponPoint;        // WeaponPoint i Armsak
-    public GameObject worldWeapon;       // Vapnet som ligger på mappen
-    private bool hasWeapon = false;
+    public GameObject armsak;
+
+    //public GameObject handgunInHand;        
+    public GameObject akInHand;
+    public GameObject shotgunInHand;
+
+    //private bool hasHandgun;
+    private bool hasAK;
+    private bool hasShotgun;
+
+    private GameObject currentWeapon;
+
+    public float pickupDistance = 3f;
 
     void Start()
     {
-        armsakPrefab.SetActive(false); // Dölj Armsak från början
+        armsak.SetActive(false);
+
+       // handgunInHand.SetActive(false);
+        akInHand.SetActive(false);
+        shotgunInHand.SetActive(false);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        HandlePickup();
+        HandleSwitch();
+    }
+
+    void HandlePickup()
+    {
+        if (!Input.GetKeyDown(KeyCode.E)) return;
+
+        RaycastHit hit;
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, pickupDistance))
         {
-            if (!hasWeapon)
-                PickUpWeapon();
-            else
-                DropWeapon();
+            if (!hit.transform.CompareTag("Weapon")) return;
+
+           // if (hit.transform.name.Contains("Handgun"))
+            //{
+              //  hasHandgun = true;
+                //hit.transform.gameObject.SetActive(false);
+               // Equip(handgunInHand);
+           // }
+            else if (hit.transform.name.Contains("AK"))
+            {
+                hasAK = true;
+                hit.transform.gameObject.SetActive(false);
+                Equip(akInHand);
+            }
+            else if (hit.transform.name.Contains("Shotgun"))
+            {
+                hasShotgun = true;
+                hit.transform.gameObject.SetActive(false);
+                Equip(shotgunInHand);
+            }
         }
     }
 
-    void PickUpWeapon()
+    void HandleSwitch()
     {
-        if (worldWeapon == null) return;
+        //if (Input.GetKeyDown(KeyCode.Alpha1) && hasHandgun)
+        //    Equip(handgunInHand);
 
-        // Dölj vapnet i världen
-        worldWeapon.SetActive(false);
+        if (Input.GetKeyDown(KeyCode.Alpha2) && hasAK)
+            Equip(akInHand);
 
-        // Visa Armsak
-        armsakPrefab.SetActive(true);
-
-        // Flytta vapnet i Armsak
-        Transform gunInArmsak = armsakPrefab.transform.Find("WeaponPoint/Handgun");
-        if (gunInArmsak != null)
-        {
-            gunInArmsak.localPosition = Vector3.zero;
-            gunInArmsak.localRotation = Quaternion.identity;
-        }
-
-        hasWeapon = true;
+        if (Input.GetKeyDown(KeyCode.Alpha3) && hasShotgun)
+            Equip(shotgunInHand);
     }
 
-    void DropWeapon()
+    void Equip(GameObject weapon)
     {
-        if (!hasWeapon) return;
+        armsak.SetActive(true);
 
-        // Dölj Armsak
-        armsakPrefab.SetActive(false);
+       // handgunInHand.SetActive(false);
+        akInHand.SetActive(false);
+        shotgunInHand.SetActive(false);
 
-        // Visa vapnet i världen igen
-        worldWeapon.SetActive(true);
-
-        hasWeapon = false;
+        weapon.SetActive(true);
+        currentWeapon = weapon;
     }
 }
