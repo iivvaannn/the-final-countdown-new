@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
@@ -11,10 +12,8 @@ public class Movement : MonoBehaviour
     [SerializeField] float Speed = 6.0f;
     [SerializeField][Range(0.0f, 0.5f)] float moveSmoothTime = 0.3f;
     [SerializeField] float gravity = -30f;
-    [SerializeField] Transform groundCheck;
-    [SerializeField] LayerMask ground;
 
-    [SerializeField] Animator animator;   // <-- LAGT TILL (behövs för animationer)
+    [SerializeField] Animator animator;
 
     public float jumpHeight = 6f;
     float velocityY;
@@ -27,7 +26,25 @@ public class Movement : MonoBehaviour
     CharacterController controller;
     Vector2 currentDir;
     Vector2 currentDirVelocity;
-    Vector3 velocity;
+
+    // ---------------- STAMINA ----------------
+    [Header("Stamina")]
+    [SerializeField] float maxStamina = 100f;
+    [SerializeField] float currentStamina = 100f;
+    [SerializeField] float sprintStaminaDrain = 25f;
+    [SerializeField] float jumpStaminaCost = 20f;
+    [SerializeField] float staminaRegen = 20f;
+    [SerializeField] float regenDelay = 1.5f;
+
+    [Header("Stamina Lock")]
+    [SerializeField] float sprintCooldown = 2f;
+
+    [Header("Stamina UI")]
+    [SerializeField] Slider staminaSlider;
+
+    float lastSprintTime;
+    bool staminaLocked;
+    float staminaLockTime;
 
     void Start()
     {
@@ -37,6 +54,14 @@ public class Movement : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = true;
+        }
+
+        currentStamina = maxStamina;
+
+        if (staminaSlider != null)
+        {
+            staminaSlider.maxValue = maxStamina;
+            staminaSlider.value = currentStamina;
         }
     }
 
@@ -50,44 +75,73 @@ public class Movement : MonoBehaviour
     {
         Vector2 targetMouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-        currentMouseDelta = Vector2.SmoothDamp(currentMouseDelta, targetMouseDelta, ref currentMouseDeltaVelocity, mouseSmoothTime);
+        currentMouseDelta = Vector2.SmoothDamp(
+            currentMouseDelta,
+            targetMouseDelta,
+            ref currentMouseDeltaVelocity,
+            mouseSmoothTime
+        );
 
         cameraCap -= currentMouseDelta.y * mouseSensitivity;
-
         cameraCap = Mathf.Clamp(cameraCap, -90.0f, 90.0f);
 
         playerCamera.localEulerAngles = Vector3.right * cameraCap;
-
         transform.Rotate(Vector3.up * currentMouseDelta.x * mouseSensitivity);
     }
 
     void UpdateMove()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, 0.2f, ground);
+        isGrounded = controller.isGrounded;
 
         Vector2 targetDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         targetDir.Normalize();
-
         currentDir = Vector2.SmoothDamp(currentDir, targetDir, ref currentDirVelocity, moveSmoothTime);
 
-        velocityY += gravity * 2f * Time.deltaTime;
+        velocityY += gravity * Time.deltaTime;
 
-        // --- SPRINT SPEED (endast tillägg, ändrar inget annat) ---
+        // --------- STAMINA SPRINT LOGIC ----------
         float realSpeed = Speed;
-        if (Input.GetKey(KeyCode.LeftShift))
+        // Stop sprint instantly when Shift is released
+        if (Input.GetKeyUp(KeyCode.LeftShift))
         {
-            realSpeed = Speed * 1.6f;
+            lastSprintTime = Time.time;
         }
 
-        Vector3 velocity = (transform.forward * currentDir.y + transform.right * currentDir.x) * realSpeed + Vector3.up * velocityY;
+        bool wantsSprint = Input.GetKey(KeyCode.LeftShift);
+        bool canSprint = !staminaLocked && currentStamina > 0f;
+        bool isSprinting = wantsSprint && canSprint;
 
-        //animator.SetFloat("Speed") == Speed;
+        if (isSprinting)
+        {
+            realSpeed = Speed * 1.6f;
+            currentStamina -= sprintStaminaDrain * Time.deltaTime;
+            lastSprintTime = Time.time;
+
+            if (currentStamina <= 0f)
+            {
+                staminaLocked = true;
+                staminaLockTime = Time.time;
+                currentStamina = 0f;
+            }
+        }
+
+        Vector3 velocity = (transform.forward * currentDir.y + transform.right * currentDir.x) * realSpeed
+                         + Vector3.up * velocityY;
 
         controller.Move(velocity * Time.deltaTime);
 
-        if (isGrounded && Input.GetButtonDown("Jump"))
+        // --------- JUMP ----------
+        if (isGrounded && Input.GetButtonDown("Jump") && currentStamina >= jumpStaminaCost && !staminaLocked)
         {
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            currentStamina -= jumpStaminaCost;
+
+            if (currentStamina <= 0f)
+            {
+                staminaLocked = true;
+                staminaLockTime = Time.time;
+                currentStamina = 0f;
+            }
         }
 
         if (isGrounded && controller.velocity.y < -1f)
@@ -95,25 +149,45 @@ public class Movement : MonoBehaviour
             velocityY = -8f;
         }
 
-        // -------------------------------------------------------
-        // ----------------- ANIMATION SYSTEM --------------------
-        // -------------------------------------------------------
+        // --------- STAMINA REGEN + COOLDOWN ----------
+        if (staminaLocked)
+        {
+            if (Time.time >= staminaLockTime + sprintCooldown)
+            {
+                staminaLocked = false;
+                lastSprintTime = Time.time;
+            }
+        }
+        else
+        {
+            if (!Input.GetKey(KeyCode.LeftShift) && Time.time > lastSprintTime + regenDelay)
+            {
+                currentStamina += staminaRegen * Time.deltaTime;
+            }
+        }
 
-        // Beräknar horizontal rörelse
+        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+
+        if (staminaSlider != null)
+        {
+            staminaSlider.value = currentStamina;
+        }
+
+        // --------- ANIMATION ----------
         Vector3 flatVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
         float currentSpeed = flatVelocity.magnitude;
 
         if (currentSpeed < 0.1f)
         {
-            animator.SetFloat("Speed", 0f);        // Idle
+            animator.SetFloat("Speed", 0f);
         }
         else if (!Input.GetKey(KeyCode.LeftShift))
         {
-            animator.SetFloat("Speed", 0.5f);      // Walk
+            animator.SetFloat("Speed", 0.5f);
         }
         else
         {
-            animator.SetFloat("Speed", 1f);        // Run
+            animator.SetFloat("Speed", 1f);
         }
     }
 }

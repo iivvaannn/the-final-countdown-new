@@ -4,65 +4,44 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("UI Components")]
-    [SerializeField] private Image healthFill; // Den fyllda delen av healthbaren
+    [Header("UI")]
+    [SerializeField] private Slider healthSlider;
 
-    [Header("Player Health")]
-    [SerializeField] private float maxHealth = 100f; // Maxhälsa
-    [SerializeField] private float currentHealth = 100f; // Nuvarande hälsa
+    [Header("Health")]
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float currentHealth;
 
     private void Start()
     {
-        // Sätter hälsan till full i början
         currentHealth = maxHealth;
-        UpdateHealthUI();
+
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = currentHealth;
     }
 
-    // Funktion för att ta skada
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Se till att hälsan inte går under 0
-        UpdateHealthUI();
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        // Check for death
+        healthSlider.value = currentHealth;
+
         if (currentHealth <= 0)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 
-   
-
-    // Funktion för att läka
     public void Heal(float amount)
     {
         currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth); // Se till att hälsan inte går över max
-        UpdateHealthUI();
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
+        healthSlider.value = currentHealth;
     }
 
-    // Uppdaterar UI:t
-    private void UpdateHealthUI()
-    {
-        if (healthFill != null)
-        {
-            healthFill.fillAmount = currentHealth / maxHealth;
-        }
-    }
-
-    // Om du vill kan du lägga till en funktion för att sätta hälsan direkt
-    public void SetHealth(float health)
-    {
-        currentHealth = Mathf.Clamp(health, 0, maxHealth);
-        UpdateHealthUI();
-    }
-
-    // Public getter to read current health
     public float CurrentHealth
     {
         get { return currentHealth; }
     }
-
 }
-

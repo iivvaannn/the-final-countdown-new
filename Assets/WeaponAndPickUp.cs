@@ -15,7 +15,7 @@ public class WeaponPickupAndDrop : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (!hasWeapon)
                 PickUpWeapon();
