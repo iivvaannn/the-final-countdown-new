@@ -11,12 +11,14 @@ public class PlayerPickup : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.V))
         {
             RaycastHit hit;
+
             if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, pickupRange))
             {
                 WeaponPickup pickup = hit.collider.GetComponent<WeaponPickup>();
+
                 if (pickup != null)
                 {
-                    weaponManager.PickupWeapon(pickup.weaponType);
+                    weaponManager.EquipWeapon(pickup.weaponPrefab);
                     Destroy(hit.collider.gameObject);
                 }
             }

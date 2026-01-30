@@ -3,20 +3,21 @@ using System.Collections;
 
 public class Gun : MonoBehaviour
 {
+    public WeaponType weaponType;
+
+
+    [Header("Stats")]
     public float damage = 10f;
     public float range = 100f;
     public float fireRate = 15f;
     public float impactForce = 30f;
 
+    [Header("References")]
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
-    public GameObject impactEffect;
-
-    public float nextTimeToFire = 0f;
 
     [Header("Audio")]
     public AudioClip shootSound;
-
     private AudioSource audioSource;
 
     [Header("Ammo")]
@@ -25,16 +26,19 @@ public class Gun : MonoBehaviour
     public float reloadTime = 1.5f;
     private bool isReloading = false;
 
+    private float nextTimeToFire = 0f;
+
     void Start()
     {
+        // Hitta kameran automatiskt
+        fpsCam = Camera.main;
+
         audioSource = GetComponent<AudioSource>();
-      
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
         }
-        audioSource.volume = 0.25f;
 
         currentAmmo = maxAmmo;
     }
@@ -49,7 +53,7 @@ public class Gun : MonoBehaviour
             return;
         }
 
-        if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
+        if (Input.GetMouseButton(0) && Time.time >= nextTimeToFire && currentAmmo > 0)
         {
             nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
@@ -58,19 +62,13 @@ public class Gun : MonoBehaviour
 
     void Shoot()
     {
-        if (currentAmmo <= 0) return;
-
-        currentAmmo = Mathf.Max(currentAmmo - 1, 0);
-
-        if (shootSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(shootSound);
-        }
+        currentAmmo--;
 
         if (muzzleFlash != null)
-        {
             muzzleFlash.Play();
-        }
+
+        if (shootSound != null)
+            audioSource.PlayOneShot(shootSound);
 
         RaycastHit hit;
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
@@ -87,16 +85,13 @@ public class Gun : MonoBehaviour
             {
                 hit.rigidbody.AddForce(-hit.normal * impactForce);
             }
-
-            //GameObject impactOG = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-            //Destroy(impactOG, 2f);
         }
     }
 
     IEnumerator Reload()
     {
         isReloading = true;
-        Debug.Log("Reloading");
+        Debug.Log("Reloading...");
 
         yield return new WaitForSeconds(reloadTime);
 

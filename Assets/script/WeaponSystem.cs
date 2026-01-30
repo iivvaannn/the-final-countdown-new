@@ -2,32 +2,47 @@ using UnityEngine;
 
 public class WeaponSystem : MonoBehaviour
 {
-    public GameObject armsak;
+    [Header("Armsaks")]
+    public GameObject armsakRifle;
+    public GameObject armsakHandgun;
 
-    public GameObject akInHand;
-    public GameObject shotgunInHand;
+    [Header("Weapon Points")]
+    public Transform riflePoint;
+    public Transform handgunPoint;
 
-    private bool hasAK = false;
-    private bool hasShotgun = false;
+    [Header("Weapons under WeaponPoint (already placed)")]
+    public GameObject ak;       // AK prefab already child of riflePoint
+    public GameObject shotgun;  // Shotgun prefab already child of riflePoint
+    public GameObject handgun;  // Handgun prefab already child of handgunPoint
 
-    private GameObject currentWeapon;
-
-    public float pickupDistance = 3f;
+    [Header("Camera")]
     public Camera cam;
+    public float pickupDistance = 3f;
+
+    bool hasAK;
+    bool hasShotgun;
+    bool hasHandgun;
+
+    GameObject currentWeapon;
 
     void Start()
     {
-        armsak.SetActive(false);
-        akInHand.SetActive(false);
-        shotgunInHand.SetActive(false);
+        // Dölj allt från början
+        armsakRifle.SetActive(false);
+        armsakHandgun.SetActive(false);
+
+        ak.SetActive(false);
+        shotgun.SetActive(false);
+        handgun.SetActive(false);
     }
 
     void Update()
     {
         HandlePickup();
-        HandleWeaponSwitch();
+        HandleSwitch();
     }
 
+    // ---------------- PICKUP ----------------
     void HandlePickup()
     {
         if (!Input.GetKeyDown(KeyCode.V)) return;
@@ -37,51 +52,72 @@ public class WeaponSystem : MonoBehaviour
         {
             if (!hit.transform.CompareTag("Weapon")) return;
 
-            if (hit.transform.name.Contains("AK"))
+            string name = hit.transform.name;
+
+            if (name.Contains("AK"))
             {
                 hasAK = true;
-                hit.transform.gameObject.SetActive(false);
                 EquipAK();
             }
-            else if (hit.transform.name.Contains("Shotgun"))
+            else if (name.Contains("Shotgun"))
             {
                 hasShotgun = true;
-                hit.transform.gameObject.SetActive(false);
                 EquipShotgun();
             }
+            else if (name.Contains("Handgun"))
+            {
+                hasHandgun = true;
+                EquipHandgun();
+            }
+
+            // Dölj vapnet på marken
+            hit.transform.gameObject.SetActive(false);
         }
     }
 
-    void HandleWeaponSwitch()
+    // ---------------- SWITCH ----------------
+    void HandleSwitch()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1) && hasAK)
-        {
-            EquipAK();
-        }
+        if (Input.GetKeyDown(KeyCode.Alpha1) && hasAK) EquipAK();
+        if (Input.GetKeyDown(KeyCode.Alpha2) && hasShotgun) EquipShotgun();
+        if (Input.GetKeyDown(KeyCode.Alpha3) && hasHandgun) EquipHandgun();
+    }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2) && hasShotgun)
-        {
-            EquipShotgun();
-        }
+    // ---------------- EQUIP ----------------
+    void ClearWeapons()
+    {
+        // Dölj alla weapons under WeaponPoint
+        ak.SetActive(false);
+        shotgun.SetActive(false);
+        handgun.SetActive(false);
+
+        // Dölj Armsaks
+        armsakRifle.SetActive(false);
+        armsakHandgun.SetActive(false);
     }
 
     void EquipAK()
     {
-        armsak.SetActive(true);
-
-        akInHand.SetActive(true);
-        shotgunInHand.SetActive(false);
-
-        currentWeapon = akInHand;
+        ClearWeapons();
+        armsakRifle.SetActive(true);
+        ak.SetActive(true);
+        currentWeapon = ak;
     }
 
     void EquipShotgun()
     {
-        armsak.SetActive(true);
+        ClearWeapons();
+        armsakRifle.SetActive(true);
+        shotgun.SetActive(true);
+        ak.SetActive(false);
+        currentWeapon = shotgun;
+    }
 
-        shotgunInHand.SetActive(true);
-        akInHand.SetActive(false);
-
-        currentWeapon = shotgunInHand;
+    void EquipHandgun()
+    {
+        ClearWeapons();
+        armsakHandgun.SetActive(true);
+        handgun.SetActive(true);
+        currentWeapon = handgun;
     }
 }
