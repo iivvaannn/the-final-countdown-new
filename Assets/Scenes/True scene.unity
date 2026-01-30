@@ -362,7 +362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6605963609297710985, guid: fdf64a556ff6c7145b31311a78f8f500, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1550,7 +1550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1107904742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11350,7 +11350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.25
+      value: 1.249
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11388,6 +11388,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5169677972427226811, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b5d403b7ff9934d44a31681262e0bb07, type: 2}
+    - target: {fileID: -4897732323685117858, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b5d403b7ff9934d44a31681262e0bb07, type: 2}
     - target: {fileID: 919132149155446097, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
       propertyPath: m_Name
       value: Handgun
@@ -11396,6 +11404,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Weapon
       objectReference: {fileID: 0}
+    - target: {fileID: 7000463878831343765, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b5d403b7ff9934d44a31681262e0bb07, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: -8700617353114198275, guid: 62c408133cd310042ae4d91b50586b95, type: 3}
@@ -11960,9 +11972,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 963194228}
     m_Modifications:
+    - target: {fileID: 1642401228363598293, guid: 8550944b747bdfd41af8df590530653b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0003
+      objectReference: {fileID: 0}
+    - target: {fileID: 1642401228363598293, guid: 8550944b747bdfd41af8df590530653b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1642401228363598293, guid: 8550944b747bdfd41af8df590530653b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0939
+      objectReference: {fileID: 0}
+    - target: {fileID: 6419202534492647996, guid: 8550944b747bdfd41af8df590530653b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.398
+      objectReference: {fileID: 0}
     - target: {fileID: 8201364503666590777, guid: 8550944b747bdfd41af8df590530653b, type: 3}
       propertyPath: m_Name
       value: arms@ak handgun/revolver
+      objectReference: {fileID: 0}
+    - target: {fileID: 8201364503666590777, guid: 8550944b747bdfd41af8df590530653b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8671809724850140046, guid: 8550944b747bdfd41af8df590530653b, type: 3}
       propertyPath: fpsCam
@@ -12027,6 +12059,10 @@ PrefabInstance:
     - target: {fileID: 1560609773310719636, guid: c65af7fed68ee9c4c9f704ee185e9d42, type: 3}
       propertyPath: m_Name
       value: arms@ak rifle/shotgun
+      objectReference: {fileID: 0}
+    - target: {fileID: 1560609773310719636, guid: c65af7fed68ee9c4c9f704ee185e9d42, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2225823845464435758, guid: c65af7fed68ee9c4c9f704ee185e9d42, type: 3}
       propertyPath: m_LocalPosition.x
