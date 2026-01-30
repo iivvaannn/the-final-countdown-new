@@ -16,6 +16,7 @@ public class Gun : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip shootSound;
+
     private AudioSource audioSource;
 
     [Header("Ammo")]
@@ -27,11 +28,13 @@ public class Gun : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+      
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
         }
+        audioSource.volume = 0.25f;
 
         currentAmmo = maxAmmo;
     }
@@ -46,16 +49,8 @@ public class Gun : MonoBehaviour
             return;
         }
 
-        // auto reload when the amo hits 0
-        //if (currentAmmo <= 0)
-        //{
-        //    StartCoroutine(Reload());
-        //    return;
-        //}
-
         if (Input.GetButton("Fire1") && Time.time >= nextTimeToFire)
         {
-            PlaySoundSegment(3f, 5f);
             nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
         }
@@ -63,9 +58,19 @@ public class Gun : MonoBehaviour
 
     void Shoot()
     {
+        if (currentAmmo <= 0) return;
+
         currentAmmo = Mathf.Max(currentAmmo - 1, 0);
 
-        muzzleFlash.Play();
+        if (shootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
+
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Play();
+        }
 
         RaycastHit hit;
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
@@ -86,22 +91,6 @@ public class Gun : MonoBehaviour
             //GameObject impactOG = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
             //Destroy(impactOG, 2f);
         }
-    }
-
-    void PlaySoundSegment(float startTime, float endTime)
-    {
-        if (shootSound == null || audioSource == null) return;
-
-        audioSource.clip = shootSound;
-        audioSource.time = startTime;
-        audioSource.Play();
-        StartCoroutine(StopAudioAfter(endTime - startTime));
-    }
-
-    IEnumerator StopAudioAfter(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        audioSource.Stop();
     }
 
     IEnumerator Reload()

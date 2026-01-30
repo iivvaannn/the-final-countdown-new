@@ -91,8 +91,6 @@ public class Movement : MonoBehaviour
 
     void UpdateMove()
     {
-        isGrounded = controller.isGrounded;
-
         Vector2 targetDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         targetDir.Normalize();
         currentDir = Vector2.SmoothDamp(currentDir, targetDir, ref currentDirVelocity, moveSmoothTime);
@@ -101,7 +99,7 @@ public class Movement : MonoBehaviour
 
         // --------- STAMINA SPRINT LOGIC ----------
         float realSpeed = Speed;
-        // Stop sprint instantly when Shift is released
+
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             lastSprintTime = Time.time;
@@ -130,10 +128,12 @@ public class Movement : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
 
-        // --------- JUMP ----------
-        if (isGrounded && Input.GetButtonDown("Jump") && currentStamina >= jumpStaminaCost && !staminaLocked)
+        // --------- GROUNDED CHECK AFTER MOVE ----------
+        isGrounded = controller.isGrounded;
+        if (isGrounded && Input.GetButtonDown("Jump") && !staminaLocked && currentStamina > 0f)
         {
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+
             currentStamina -= jumpStaminaCost;
 
             if (currentStamina <= 0f)
@@ -144,7 +144,8 @@ public class Movement : MonoBehaviour
             }
         }
 
-        if (isGrounded && controller.velocity.y < -1f)
+        // --------- SNAP TO GROUND ----------
+        if (isGrounded && velocityY < 0f)
         {
             velocityY = -8f;
         }

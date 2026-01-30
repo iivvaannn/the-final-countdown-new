@@ -4,13 +4,19 @@ using System.Collections;
 
 public class zombiecontroller : MonoBehaviour
 {
-    public Animator anim;            // Zombie Animator
-    public Transform player;         // Spelaren
-    public float attackRange = 2f;   // När attack ska börja
-    public float attackCooldown = 2f;// Tid mellan attacker
-    public float attackDamage = 10f; // Skada per attack
-    public float attackDelay = 0.5f; // När i animation skadan sker
+    public Animator anim;
+    public Transform player;
+    public float attackRange = 2f;
+    public float attackCooldown = 2f;
+    public float attackDamage = 10f;
+    public float attackDelay = 0.5f;
 
+    [Header("Audio")]
+    public AudioClip idleGroan;
+    public AudioClip attackSound;
+    public AudioClip deathSound;
+
+    private AudioSource audioSource;
     private NavMeshAgent agent;
     private bool isAttacking = false;
 
@@ -26,6 +32,18 @@ public class zombiecontroller : MonoBehaviour
             GameObject p = GameObject.FindGameObjectWithTag("Player");
             if (p != null) player = p.transform;
         }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1f;
+            audioSource.minDistance = 2f;
+            audioSource.maxDistance = 25f;
+        }
+
+        StartCoroutine(PlayIdleGroans());
     }
 
     void Update()
@@ -36,14 +54,12 @@ public class zombiecontroller : MonoBehaviour
 
         if (!isAttacking && dist > attackRange)
         {
-            // Följ spelaren med NavMeshAgent
             agent.isStopped = false;
             agent.SetDestination(player.position);
             anim.SetBool("isMove", true);
         }
         else if (!isAttacking && dist <= attackRange)
         {
-            // Attackera
             StartCoroutine(AttackRoutine());
         }
     }
@@ -51,14 +67,14 @@ public class zombiecontroller : MonoBehaviour
     IEnumerator AttackRoutine()
     {
         isAttacking = true;
-        agent.isStopped = true;           // Stoppa agent under attack
-        anim.SetBool("isMove", false);    // Stoppa Walk animation
-        anim.SetTrigger("Attack");        // Spela Attack animation
+        agent.isStopped = true;
+        anim.SetBool("isMove", false);
+        anim.SetTrigger("Attack");
 
-        // Vänta tills attacken ska träffa
+        PlayAttackSound();
+
         yield return new WaitForSeconds(attackDelay);
 
-        // Applicera skada på spelaren
         if (player != null)
         {
             PlayerHealth ph = player.GetComponent<PlayerHealth>();
@@ -69,8 +85,29 @@ public class zombiecontroller : MonoBehaviour
             }
         }
 
-        // Vänta cooldown innan nästa attack
         yield return new WaitForSeconds(attackCooldown - attackDelay);
         isAttacking = false;
+    }
+
+    IEnumerator PlayIdleGroans()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(6f, 14f));
+            if (idleGroan != null)
+                audioSource.PlayOneShot(idleGroan);
+        }
+    }
+
+    void PlayAttackSound()
+    {
+        if (attackSound != null)
+            audioSource.PlayOneShot(attackSound);
+    }
+
+    public void PlayDeathSound()
+    {
+        if (deathSound != null)
+            audioSource.PlayOneShot(deathSound);
     }
 }
