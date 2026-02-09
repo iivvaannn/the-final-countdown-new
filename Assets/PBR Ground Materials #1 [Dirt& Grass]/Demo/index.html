@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="sv"> <!-- Anger att dokumentets språk är svenska -->
+
+<head>
+    <meta charset="UTF-8"> <!-- Ställer in teckenkodning så svenska tecken fungerar -->
+    <title>Studentkonto</title> <!-- Titel som visas i webbläsarfliken -->
+    <link rel="stylesheet" href="style.css"> <!-- Kopplar extern CSS-fil för layout och design -->
+</head>
+
+<body>
+
+    <!-- Huvudkort som innehåller hela registreringsformuläret -->
+    <div class="card">
+
+        <h1 id="welcome">Studentregistrering</h1> <!-- Huvudrubrik -->
+        <p class="subtitle">Skapa ditt universitetskonto</p> <!-- Underrubrik -->
+
+        <!-- Formulär för registrering, novalidate stänger av webbläsarens inbyggda validering -->
+        <form id="registerForm" novalidate>
+
+            <!-- Sektion för personuppgifter -->
+            <div class="section">
+                <h2>Personuppgifter</h2>
+
+                <label>Förnamn</label> <!-- Etikett för förnamnsfält -->
+                <input type="text" id="firstName"> <!-- Textfält för förnamn -->
+
+                <label>Efternamn</label>
+                <input type="text" id="lastName"> <!-- Textfält för efternamn -->
+
+                <label>Ålder (18–30)</label>
+                <input type="number" id="age"> <!-- Nummerfält för ålder -->
+            </div>
+
+            <!-- Sektion för kontouppgifter -->
+            <div class="section">
+                <h2>Konto</h2>
+
+                <label>E-post</label>
+
+                <!-- Rad som delar upp e-post i namn + domän -->
+                <div class="email-row">
+                    <input type="text" id="emailName" placeholder="namn"> <!-- Del före @ -->
+                    <span>@</span> <!-- Visuell @-symbol -->
+                    <select id="emailDomain"> <!-- Lista med vanliga e-postdomäner -->
+                        <option value="">Välj</option>
+                        <option value="gmail.com">gmail.com</option>
+                        <option value="hotmail.com">hotmail.com</option>
+                        <option value="outlook.com">outlook.com</option>
+                        <option value="other">Annat</option> <!-- Visar eget domänfält via JS -->
+                    </select>
+                </div>
+
+                <!-- Fält för egen domän, dolt från början -->
+                <input type="text" id="customDomain" class="hidden" placeholder="exempel.se">
+
+                <label>Program</label>
+                <select id="program"> <!-- Val av studieprogram -->
+                    <option value="">Välj program</option>
+                    <option value="IT">IT</option>
+                    <option value="Ekonomi">Ekonomi</option>
+                    <option value="Teknik">Teknik</option>
+                    <option value="Design">Design</option>
+                </select>
+
+                <label>Lösenord</label>
+                <input type="password" id="password"> <!-- Lösenordsfält -->
+
+                <label>Upprepa lösenord</label>
+                <input type="password" id="repeatPassword"> <!-- Bekräfta lösenord -->
+
+                <!-- Kryssruta för att visa eller dölja lösenord via JavaScript -->
+                <div class="checkbox">
+                    <input type="checkbox" id="showPassword">
+                    <label>Visa lösenord</label>
+                </div>
+            </div>
+
+            <!-- Sektion för godkännande av villkor -->
+            <div class="section">
+                <div class="checkbox">
+                    <input type="checkbox" id="terms"> <!-- Måste kryssas i för att fortsätta -->
+                    <label>
+                        Jag accepterar
+                        <span id="openTerms" class="link">villkoren</span> <!-- Klickbar länk som öppnar popup -->
+                    </label>
+                </div>
+            </div>
+
+            <!-- Skicka formulär -->
+            <button type="submit">Skapa konto</button>
+
+            <!-- Här visas felmeddelanden eller bekräftelse via JavaScript -->
+            <p id="message"></p>
+
+        </form>
+    </div>
+
+    <!-- Popup-fönster med villkor -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <h2>Villkor</h2>
+            <p>
+                Kontot är personligt. Uppgifter används endast för studierelaterade
+                tjänster. Missbruk kan leda till avstängning.
+            </p>
+            <!-- Knapp som stänger popupen -->
+            <button id="closeTerms" type="button">Stäng</button>
+        </div>
+    </div>
+
+    <!-- Kopplar JavaScript-fil som hanterar validering och interaktivitet -->
+    <script src="script.js"></script>
+</body>
+
+</html>

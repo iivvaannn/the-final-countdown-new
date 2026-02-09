@@ -5,7 +5,6 @@ public class Gun : MonoBehaviour
 {
     public WeaponType weaponType;
 
-
     [Header("Stats")]
     public float damage = 10f;
     public float range = 100f;
@@ -18,6 +17,7 @@ public class Gun : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip shootSound;
+    [Range(0f, 1f)] public float shootVolume = 0.35f;   // ? added
     private AudioSource audioSource;
 
     [Header("Ammo")]
@@ -30,7 +30,6 @@ public class Gun : MonoBehaviour
 
     void Start()
     {
-        // Hitta kameran automatiskt
         fpsCam = Camera.main;
 
         audioSource = GetComponent<AudioSource>();
@@ -68,7 +67,7 @@ public class Gun : MonoBehaviour
             muzzleFlash.Play();
 
         if (shootSound != null)
-            audioSource.PlayOneShot(shootSound);
+            audioSource.PlayOneShot(shootSound, shootVolume);   // ? changed
 
         RaycastHit hit;
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))

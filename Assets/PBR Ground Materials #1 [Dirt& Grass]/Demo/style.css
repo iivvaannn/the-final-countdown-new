@@ -1,0 +1,245 @@
+/* Sätter box-modell till border-box för alla element, padding och border räknas in i bredd/höjd */
+* {
+    box-sizing: border-box;
+}
+
+/* Grundlayout för sidan */
+body {
+    margin: 0;
+    /* Tar bort standardmarginal */
+    min-height: 100vh;
+    /* Minst hela skärmens höjd */
+    background: #eef2f7;
+    /* Ljus bakgrundsfärg */
+    font-family: Arial, sans-serif;
+    /* Typsnitt */
+    display: flex;
+    /* Flexlayout */
+    align-items: center;
+    /* Centrerar vertikalt */
+    justify-content: center;
+    /* Centrerar horisontellt */
+}
+
+/* ===== Card ===== */
+/* Huvudkortet som innehåller formuläret */
+.card {
+    background: white;
+    /* Vit bakgrund */
+    width: 460px;
+    /* Fast bredd */
+    padding: 28px;
+    /* Inre marginal */
+    border-radius: 10px;
+    /* Rundade hörn */
+    border-top: 6px solid #2563eb;
+    /* Färgad toppkant */
+}
+
+/* Huvudrubrik */
+h1 {
+    text-align: center;
+    /* Centrerad text */
+    margin-bottom: 4px;
+    /* Liten marginal nedåt */
+    color: #1f2937;
+    /* Mörk textfärg */
+}
+
+/* Underrubrik */
+.subtitle {
+    text-align: center;
+    /* Centrerad text */
+    color: #475569;
+    /* Gråblå textfärg */
+    margin-bottom: 20px;
+    /* Avstånd nedåt */
+}
+
+/* ===== Sections ===== */
+/* Varje formulärsektion */
+.section {
+    margin-bottom: 20px;
+    /* Avstånd mellan sektioner */
+    padding-bottom: 12px;
+    /* Inre avstånd nedåt */
+    border-bottom: 1px solid #e2e8f0;
+    /* Tunn avdelande linje */
+}
+
+/* Rubriker i sektioner */
+.section h2 {
+    margin: 0 0 10px 0;
+    /* Avstånd nedåt */
+    font-size: 16px;
+    /* Mindre rubrikstorlek */
+    color: #2563eb;
+    /* Blå färg */
+}
+
+/* ===== Form elements ===== */
+/* Etiketter till fält */
+label {
+    display: block;
+    /* Tar hela raden */
+    margin-top: 8px;
+    /* Avstånd uppåt */
+    font-size: 14px;
+    /* Textstorlek */
+    color: #1f2937;
+    /* Mörk text */
+}
+
+/* Inputfält och select-listor */
+input,
+select {
+    width: 100%;
+    /* Full bredd */
+    padding: 9px;
+    /* Inre avstånd */
+    margin-top: 4px;
+    /* Litet avstånd ovanför */
+    border-radius: 6px;
+    /* Rundade hörn */
+    border: 1px solid #cbd5e1;
+    /* Ljus kantlinje */
+    font-size: 14px;
+    /* Textstorlek */
+}
+
+/* Stil när fält är aktivt */
+input:focus,
+select:focus {
+    outline: none;
+    /* Tar bort standardmarkering */
+    border-color: #2563eb;
+    /* Blå kant vid fokus */
+}
+
+/* ===== Email row ===== */
+/* Radlayout för e-postens namn + @ + domän */
+.email-row {
+    display: flex;
+    /* Flexlayout */
+    align-items: center;
+    /* Vertikal centrering */
+    gap: 6px;
+    /* Avstånd mellan elementen */
+}
+
+/* ===== Checkbox + terms ===== */
+/* Layout för checkbox och tillhörande text */
+.checkbox {
+    display: flex;
+    /* Flexlayout */
+    align-items: center;
+    /* Vertikal centrering */
+    gap: 8px;
+    /* Avstånd mellan ruta och text */
+    margin-top: 10px;
+    /* Avstånd uppåt */
+    font-size: 14px;
+    /* Textstorlek */
+    line-height: 1;
+    /* Tät radavstånd */
+    cursor: pointer;
+    /* Pekare vid hover */
+}
+
+/* Storlek och nollställd marginal för checkbox-rutor */
+.checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+/* ===== Links ===== */
+/* Klickbar text, används för villkorslänk */
+.link {
+    color: #2563eb;
+    /* Blå färg */
+    cursor: pointer;
+    /* Pekare vid hover */
+    text-decoration: underline;
+    /* Understruken */
+}
+
+/* ===== Button ===== */
+/* Skicka-knapp */
+button {
+    width: 100%;
+    /* Full bredd */
+    padding: 12px;
+    /* Inre avstånd */
+    margin-top: 16px;
+    /* Avstånd uppåt */
+    background: #2563eb;
+    /* Blå bakgrund */
+    color: white;
+    /* Vit text */
+    border: none;
+    /* Ingen kant */
+    border-radius: 6px;
+    /* Rundade hörn */
+    cursor: pointer;
+    /* Pekare */
+    font-size: 15px;
+    /* Textstorlek */
+}
+
+/* Knappstil när muspekaren är över */
+button:hover {
+    background: #1d4ed8;
+    /* Mörkare blå */
+}
+
+/* ===== Message ===== */
+/* Meddelanderuta för fel eller bekräftelse */
+#message {
+    margin-top: 12px;
+    /* Avstånd uppåt */
+    text-align: center;
+    /* Centrerad text */
+    font-weight: bold;
+    /* Fet stil */
+}
+
+/* ===== Utility ===== */
+/* Hjälpklass för att dölja element */
+.hidden {
+    display: none;
+}
+
+/* ===== Modal ===== */
+/* Bakgrundslager för popup */
+.modal {
+    position: fixed;
+    /* Ligger ovanpå sidan */
+    inset: 0;
+    /* Täcker hela skärmen */
+    background: rgba(0, 0, 0, 0.5);
+    /* Halvtransparent svart */
+    z-index: 1000;
+    /* Hög lagerordning */
+    display: none;
+    /* Dold som standard */
+}
+
+/* Aktiv modal visas och centreras */
+.modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Själva popup-rutan */
+.modal-content {
+    background: white;
+    /* Vit bakgrund */
+    padding: 24px;
+    /* Inre avstånd */
+    width: 340px;
+    /* Bredd */
+    border-radius: 8px;
+    /* Rundade hörn */
+}
