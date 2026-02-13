@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.343135, g: 0.3774488, b: 0.42646858, a: 1}
+  m_FogColor: {r: 0.32352746, g: 0.35849485, b: 0.4088218, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.21442264, g: 0.27517593, b: 0.3663059, a: 1}
+  m_AmbientSkyColor: {r: 0.20936236, g: 0.26724398, b: 0.35406643, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.00417457, g: 0.00033721386, b: 0.00000008120929, a: 1}
+  m_IndirectSpecularColor: {r: 0.004161278, g: 0.00033638798, b: 0.00000008048605, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -159,7 +159,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sun: {fileID: 705507994}
   Preset: {fileID: 11400000, guid: 1341127812709404ea81cab799c21539, type: 2}
-  TimeOfDay: 3
+  TimeOfDay: 2.6
 --- !u!4 &28687024
 Transform:
   m_ObjectHideFlags: 0
@@ -350,6 +350,10 @@ PrefabInstance:
     - target: {fileID: 2212272252155142519, guid: fdf64a556ff6c7145b31311a78f8f500, type: 3}
       propertyPath: attackRange
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2212272252155142519, guid: fdf64a556ff6c7145b31311a78f8f500, type: 3}
+      propertyPath: attackDamage
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5829566994305299763, guid: fdf64a556ff6c7145b31311a78f8f500, type: 3}
       propertyPath: m_LocalScale.x
@@ -777,7 +781,7 @@ MonoBehaviour:
   moveSmoothTime: 0.5
   gravity: -18
   animator: {fileID: 330806566}
-  jumpHeight: 2
+  jumpHeight: 1.5
   maxStamina: 100
   currentStamina: 100
   sprintStaminaDrain: 10
@@ -856,9 +860,37 @@ PrefabInstance:
     m_TransformParent: {fileID: 963719333}
     m_Modifications:
     - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: range
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: damage
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
       propertyPath: fpsCam
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: maxAmmo
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: fireRate
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: shootSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 1a9404cc06f410c47aabc5899f7f82bc, type: 3}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: bloodPrefab
+      value: 
+      objectReference: {fileID: 2337732449660134219, guid: 3eb8e185a67834b4a9310577b7e85755, type: 3}
+    - target: {fileID: 6756783266699026957, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
+      propertyPath: shootVolume
+      value: 0.527
+      objectReference: {fileID: 0}
     - target: {fileID: 7145134938548177132, guid: 57c4cfdaeef410e4fa6641afeea3447e, type: 3}
       propertyPath: m_Name
       value: 'Shotgun_Prefab '
@@ -1030,6 +1062,10 @@ PrefabInstance:
       propertyPath: fpsCam
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 8634912188578444745, guid: 632d6982c193e0047aa50d8a9ea59836, type: 3}
+      propertyPath: bloodPrefab
+      value: 
+      objectReference: {fileID: 2337732449660134219, guid: 3eb8e185a67834b4a9310577b7e85755, type: 3}
     - target: {fileID: 8780406440602538897, guid: 632d6982c193e0047aa50d8a9ea59836, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1103,7 +1139,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 0.7384454, g: 0.68790853, b: 0.6666667, a: 1}
+  m_Color: {r: 0.7027311, g: 0.66938996, b: 0.6666667, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -1162,7 +1198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.033353083, y: 0.9203639, z: 0.38122723, w: 0.080521464}
+  m_LocalRotation: {x: -0.037521545, y: 0.89915067, z: 0.42887294, w: 0.07866555}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1546,7 +1582,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 247
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -11741,9 +11777,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7693584697357947597, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -7060021821548938386, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
       propertyPath: m_TagString
@@ -11808,6 +11856,10 @@ PrefabInstance:
     - target: {fileID: 8526037475074246931, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 8719560119506584281, guid: da4f9e808f970e34da8dd9e91a92e63f, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -11912,6 +11964,10 @@ PrefabInstance:
       propertyPath: fpsCam
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 6873234875211813200, guid: 01beb92f255af5547b398d35764980de, type: 3}
+      propertyPath: bloodPrefab
+      value: 
+      objectReference: {fileID: 2337732449660134219, guid: 3eb8e185a67834b4a9310577b7e85755, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -12254,6 +12310,10 @@ PrefabInstance:
       propertyPath: fpsCam
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 8671809724850140046, guid: 8550944b747bdfd41af8df590530653b, type: 3}
+      propertyPath: bloodPrefab
+      value: 
+      objectReference: {fileID: 2337732449660134219, guid: 3eb8e185a67834b4a9310577b7e85755, type: 3}
     - target: {fileID: 8834594881264148099, guid: 8550944b747bdfd41af8df590530653b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.23
@@ -12362,6 +12422,10 @@ PrefabInstance:
       propertyPath: fpsCam
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 7190153554890362232, guid: c65af7fed68ee9c4c9f704ee185e9d42, type: 3}
+      propertyPath: bloodPrefab
+      value: 
+      objectReference: {fileID: 2337732449660134219, guid: 3eb8e185a67834b4a9310577b7e85755, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

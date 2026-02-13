@@ -8,32 +8,40 @@ public class Gun : MonoBehaviour
     [Header("Stats")]
     public float damage = 10f;
     public float range = 100f;
-    public float fireRate = 15f;
+    public float fireRate = 12f;
     public float impactForce = 30f;
+    public GameObject bloodPrefab;
 
     [Header("References")]
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
+    public Animator weaponAnimator;
 
-    [Header("Audio")]
+    [Header("Shoot Audio")]
     public AudioClip shootSound;
-    [Range(0f, 1f)] public float shootVolume = 0.35f;   // ? added
+    public AudioClip emptyClickSound;
+    [Range(0f, 1f)] public float shootVolume = 0.4f;
+
+    [Header("Reload Audio")]
+    public AudioClip reloadSound;
+    [Range(0f, 1f)] public float reloadVolume = 0.6f;
+
     private AudioSource audioSource;
 
     [Header("Ammo")]
     public int maxAmmo = 30;
     public int currentAmmo;
-    public float reloadTime = 1.5f;
-    private bool isReloading = false;
+    public float reloadTime = 1.6f;
 
+    private bool isReloading = false;
     private float nextTimeToFire = 0f;
 
     void Start()
     {
-        fpsCam = Camera.main;
+        if (!fpsCam) fpsCam = Camera.main;
 
         audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
+        if (!audioSource)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
@@ -46,51 +54,105 @@ public class Gun : MonoBehaviour
     {
         if (isReloading) return;
 
-        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(Reload());
+            TryReload();
             return;
         }
 
-        if (Input.GetMouseButton(0) && Time.time >= nextTimeToFire && currentAmmo > 0)
+        if (Input.GetMouseButton(0))
         {
-            nextTimeToFire = Time.time + 1f / fireRate;
-            Shoot();
+            TryShoot();
         }
+    }
+
+    void TryShoot()
+    {
+        if (Time.time < nextTimeToFire) return;
+
+        if (currentAmmo <= 0)
+        {
+            if (emptyClickSound)
+                audioSource.PlayOneShot(emptyClickSound, 0.6f);
+            return;
+        }
+
+        nextTimeToFire = Time.time + 1f / fireRate;
+        Shoot();
     }
 
     void Shoot()
     {
         currentAmmo--;
 
-        if (muzzleFlash != null)
+        if (muzzleFlash)
             muzzleFlash.Play();
 
-        if (shootSound != null)
-            audioSource.PlayOneShot(shootSound, shootVolume);   // ? changed
+        if (weaponAnimator)
+            weaponAnimator.SetTrigger("Fire");
+
+        if (shootSound)
+        {
+            audioSource.pitch = Random.Range(0.95f, 1.05f);
+            audioSource.PlayOneShot(shootSound, shootVolume);
+        }
+
+        if (fpsCam)
+        {
+            fpsCam.transform.localRotation *= Quaternion.Euler(
+                Random.Range(-1.2f, -0.6f),
+                Random.Range(-0.3f, 0.3f),
+                0f
+            );
+        }
 
         RaycastHit hit;
         if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
         {
-            Debug.Log(hit.transform.name);
+            // FIX: works even if collider is on child object
+            Enemyhealthscript enemyHit = hit.transform.GetComponentInParent<Enemyhealthscript>();
 
-            Enemyhealthscript enemyHit = hit.transform.GetComponent<Enemyhealthscript>();
-            if (enemyHit != null)
+            if (enemyHit)
             {
                 enemyHit.takeDamage(damage);
+
+                // ADDED: blood spawn
+                if (bloodPrefab)
+                {
+                    Instantiate(
+                        bloodPrefab,
+                        hit.point + hit.normal * 0.02f,
+                        Quaternion.LookRotation(hit.normal)
+                    );
+                }
             }
 
-            if (hit.rigidbody != null)
+            if (hit.rigidbody && enemyHit == null)
             {
                 hit.rigidbody.AddForce(-hit.normal * impactForce);
             }
         }
+
+        // AmmoUI.Instance.Update(currentAmmo, maxAmmo, weaponType);
+    }
+
+    void TryReload()
+    {
+        if (currentAmmo == maxAmmo) return;
+        if (isReloading) return;
+
+        StartCoroutine(Reload());
     }
 
     IEnumerator Reload()
     {
         isReloading = true;
-        Debug.Log("Reloading...");
+
+        if (weaponAnimator)
+            weaponAnimator.SetTrigger("Reload");
+
+        if (reloadSound)
+            audioSource.PlayOneShot(reloadSound, reloadVolume);
 
         yield return new WaitForSeconds(reloadTime);
 
