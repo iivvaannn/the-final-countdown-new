@@ -14,6 +14,7 @@ public class WeaponSystem : MonoBehaviour
     public GameObject ak;       // AK prefab already child of riflePoint
     public GameObject shotgun;  // Shotgun prefab already child of riflePoint
     public GameObject handgun;  // Handgun prefab already child of handgunPoint
+    public GameObject sniper; 
 
     [Header("Camera")]
     public Camera cam;
@@ -22,6 +23,8 @@ public class WeaponSystem : MonoBehaviour
     bool hasAK;
     bool hasShotgun;
     bool hasHandgun;
+    bool hasSniper; 
+
 
     GameObject currentWeapon;
 
@@ -34,6 +37,7 @@ public class WeaponSystem : MonoBehaviour
         ak.SetActive(false);
         shotgun.SetActive(false);
         handgun.SetActive(false);
+        sniper.SetActive(false);
     }
 
     void Update()
@@ -69,6 +73,11 @@ public class WeaponSystem : MonoBehaviour
                 hasHandgun = true;
                 EquipHandgun();
             }
+            else if (name.Contains("Sniper"))
+            {
+                hasSniper = true;
+                EquipSniper();
+            }
 
             // Dölj vapnet på marken
             hit.transform.gameObject.SetActive(false);
@@ -81,6 +90,8 @@ public class WeaponSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1) && hasAK) EquipAK();
         if (Input.GetKeyDown(KeyCode.Alpha2) && hasShotgun) EquipShotgun();
         if (Input.GetKeyDown(KeyCode.Alpha3) && hasHandgun) EquipHandgun();
+        if (Input.GetKeyDown(KeyCode.Alpha4) && hasSniper) EquipSniper();
+
     }
 
     // ---------------- EQUIP ----------------
@@ -90,6 +101,7 @@ public class WeaponSystem : MonoBehaviour
         ak.SetActive(false);
         shotgun.SetActive(false);
         handgun.SetActive(false);
+        sniper.SetActive(false);
 
         // Dölj Armsaks
         armsakRifle.SetActive(false);
@@ -120,4 +132,13 @@ public class WeaponSystem : MonoBehaviour
         handgun.SetActive(true);
         currentWeapon = handgun;
     }
+
+    void EquipSniper()
+    {
+        ClearWeapons();
+        armsakRifle.SetActive(true);
+        sniper.SetActive(true);
+        currentWeapon = sniper;
+    }
+
 }
