@@ -21,15 +21,15 @@ MonoBehaviour:
     key4: {r: 0.61108947, g: 0.6019812, b: 0.592873, a: 0}
     key5: {r: 0.29188988, g: 0.26100624, b: 0.3333333, a: 0}
     key6: {r: 0.1764706, g: 0.21568628, b: 0.27450982, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0.1764706, g: 0.21568628, b: 0.27450982, a: 0}
     ctime0: 0
     ctime1: 13107
     ctime2: 17605
     ctime3: 32896
-    ctime4: 40863
-    ctime5: 45746
+    ctime4: 39707
+    ctime5: 44076
     ctime6: 65535
-    ctime7: 0
+    ctime7: 65535
     atime0: 0
     atime1: 65535
     atime2: 0
@@ -39,7 +39,7 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 0
-    m_ColorSpace: -1
+    m_ColorSpace: 0
     m_NumColorKeys: 7
     m_NumAlphaKeys: 2
   DirectionalColor:

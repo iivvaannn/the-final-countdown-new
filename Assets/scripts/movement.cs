@@ -5,12 +5,14 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
+    public bool IsSprinting { get; private set; }
+
     [SerializeField] Transform playerCamera;
     [SerializeField][Range(0.0f, 0.5f)] float mouseSmoothTime = 0.03f;
     [SerializeField] bool cursorLock = true;
     [SerializeField] float mouseSensitivity = 3.5f;
     [SerializeField] float Speed = 6.0f;
-    [SerializeField][Range(0.0f, 0.5f)] float moveSmoothTime = 0.3f;
+    [SerializeField][Range(0.0f, 0.5f)] float moveSmoothTime = 0.15f;
     [SerializeField] float gravity = -30f;
 
     [SerializeField] Animator animator;
@@ -26,6 +28,16 @@ public class Movement : MonoBehaviour
     CharacterController controller;
     Vector2 currentDir;
     Vector2 currentDirVelocity;
+
+    // ---------------- HEAD BOB ----------------
+    [Header("Head Bob")]
+    [SerializeField] float walkBobSpeed = 8f;
+    [SerializeField] float runBobSpeed = 14f;
+    [SerializeField] float walkBobAmount = 0.025f;
+    [SerializeField] float runBobAmount = 0.05f;
+
+    float bobTimer;
+    Vector3 cameraStartPos;
 
     // ---------------- STAMINA ----------------
     [Header("Stamina")]
@@ -46,6 +58,24 @@ public class Movement : MonoBehaviour
     bool staminaLocked;
     float staminaLockTime;
 
+    // ---------------- FOOTSTEPS ----------------
+    [Header("Footsteps")]
+    [SerializeField] AudioSource footstepSource;
+    [SerializeField] AudioClip[] walkSteps;
+    [SerializeField] AudioClip[] runSteps;
+
+    [SerializeField] float walkStepTime = 0.55f;
+    [SerializeField] float runStepTime = 0.32f;
+
+    float stepTimer;
+
+    // ---------------- BREATHING ----------------
+    [Header("Breathing")]
+    [SerializeField] AudioSource breathingSource;
+    [SerializeField] AudioClip lightBreathing;
+    [SerializeField] AudioClip heavyBreathing;
+    [SerializeField] float heavyBreathThreshold = 30f;
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -53,8 +83,10 @@ public class Movement : MonoBehaviour
         if (cursorLock)
         {
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = true;
+            Cursor.visible = false;
         }
+
+        cameraStartPos = playerCamera.localPosition;
 
         currentStamina = maxStamina;
 
@@ -73,17 +105,17 @@ public class Movement : MonoBehaviour
 
     void UpdateMouse()
     {
-        Vector2 targetMouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 targetMouseDelta =
+            new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
         currentMouseDelta = Vector2.SmoothDamp(
             currentMouseDelta,
             targetMouseDelta,
             ref currentMouseDeltaVelocity,
-            mouseSmoothTime
-        );
+            mouseSmoothTime);
 
         cameraCap -= currentMouseDelta.y * mouseSensitivity;
-        cameraCap = Mathf.Clamp(cameraCap, -90.0f, 90.0f);
+        cameraCap = Mathf.Clamp(cameraCap, -90f, 90f);
 
         playerCamera.localEulerAngles = Vector3.right * cameraCap;
         transform.Rotate(Vector3.up * currentMouseDelta.x * mouseSensitivity);
@@ -91,25 +123,27 @@ public class Movement : MonoBehaviour
 
     void UpdateMove()
     {
-        Vector2 targetDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        Vector2 targetDir =
+            new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
         targetDir.Normalize();
-        currentDir = Vector2.SmoothDamp(currentDir, targetDir, ref currentDirVelocity, moveSmoothTime);
+
+        currentDir = Vector2.SmoothDamp(
+            currentDir,
+            targetDir,
+            ref currentDirVelocity,
+            moveSmoothTime);
 
         velocityY += gravity * Time.deltaTime;
 
-        // --------- STAMINA SPRINT LOGIC ----------
         float realSpeed = Speed;
-
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            lastSprintTime = Time.time;
-        }
 
         bool wantsSprint = Input.GetKey(KeyCode.LeftShift);
         bool canSprint = !staminaLocked && currentStamina > 0f;
-        bool isSprinting = wantsSprint && canSprint;
 
-        if (isSprinting)
+        IsSprinting = wantsSprint && canSprint;
+
+        if (IsSprinting)
         {
             realSpeed = Speed * 1.6f;
             currentStamina -= sprintStaminaDrain * Time.deltaTime;
@@ -123,34 +157,28 @@ public class Movement : MonoBehaviour
             }
         }
 
-        Vector3 velocity = (transform.forward * currentDir.y + transform.right * currentDir.x) * realSpeed
-                         + Vector3.up * velocityY;
+        Vector3 velocity =
+            (transform.forward * currentDir.y +
+             transform.right * currentDir.x) * realSpeed
+             + Vector3.up * velocityY;
 
         controller.Move(velocity * Time.deltaTime);
 
-        // --------- GROUNDED CHECK AFTER MOVE ----------
         isGrounded = controller.isGrounded;
-        if (isGrounded && Input.GetButtonDown("Jump") && !staminaLocked && currentStamina > 0f)
+
+        if (isGrounded &&
+            Input.GetButtonDown("Jump") &&
+            !staminaLocked &&
+            currentStamina > 0f)
         {
             velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
-
             currentStamina -= jumpStaminaCost;
-
-            if (currentStamina <= 0f)
-            {
-                staminaLocked = true;
-                staminaLockTime = Time.time;
-                currentStamina = 0f;
-            }
         }
 
-        // --------- SNAP TO GROUND ----------
         if (isGrounded && velocityY < 0f)
-        {
             velocityY = -8f;
-        }
 
-        // --------- STAMINA REGEN + COOLDOWN ----------
+        // stamina regen
         if (staminaLocked)
         {
             if (Time.time >= staminaLockTime + sprintCooldown)
@@ -159,36 +187,116 @@ public class Movement : MonoBehaviour
                 lastSprintTime = Time.time;
             }
         }
-        else
+        else if (!IsSprinting && Time.time > lastSprintTime + regenDelay)
         {
-            if (!Input.GetKey(KeyCode.LeftShift) && Time.time > lastSprintTime + regenDelay)
-            {
-                currentStamina += staminaRegen * Time.deltaTime;
-            }
+            currentStamina += staminaRegen * Time.deltaTime;
         }
 
-        currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
-        if (staminaSlider != null)
-        {
+        if (staminaSlider)
             staminaSlider.value = currentStamina;
+
+        Vector3 flatVel =
+            new Vector3(controller.velocity.x, 0, controller.velocity.z);
+
+        float speed = flatVel.magnitude;
+
+        if (speed < 0.1f) animator.SetFloat("Speed", 0f);
+        else if (!IsSprinting) animator.SetFloat("Speed", 0.5f);
+        else animator.SetFloat("Speed", 1f);
+
+        HandleFootsteps(speed);
+        HandleBreathing();
+       
+    }
+
+    // ---------------- HEAD BOB ----------------
+    void HandleCameraBob()
+    {
+        if (!isGrounded)
+            return;
+
+        float moveAmount =
+            Mathf.Abs(Input.GetAxisRaw("Horizontal")) +
+            Mathf.Abs(Input.GetAxisRaw("Vertical"));
+
+        if (moveAmount < 0.1f)
+        {
+            bobTimer = 0f;
+            playerCamera.localPosition =
+                Vector3.Lerp(playerCamera.localPosition,
+                cameraStartPos,
+                Time.deltaTime * 6f);
+            return;
         }
 
-        // --------- ANIMATION ----------
-        Vector3 flatVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
-        float currentSpeed = flatVelocity.magnitude;
+        float speed = IsSprinting ? runBobSpeed : walkBobSpeed;
+        float amount = IsSprinting ? runBobAmount : walkBobAmount;
 
-        if (currentSpeed < 0.1f)
+        bobTimer += Time.deltaTime * speed;
+
+        float bobY = Mathf.Sin(bobTimer) * amount;
+
+        playerCamera.localPosition =
+            cameraStartPos + new Vector3(0f, bobY, 0f);
+    }
+
+    // ---------------- FOOTSTEPS ----------------
+    void HandleFootsteps(float speed)
+    {
+        if (!isGrounded) return;
+
+        bool moving = speed > 0.1f;
+
+        if (!moving)
         {
-            animator.SetFloat("Speed", 0f);
+            stepTimer = 0;
+            return;
         }
-        else if (!Input.GetKey(KeyCode.LeftShift))
+
+        stepTimer -= Time.deltaTime;
+
+        float interval = IsSprinting ? runStepTime : walkStepTime;
+
+        if (stepTimer <= 0f && !footstepSource.isPlaying)
         {
-            animator.SetFloat("Speed", 0.5f);
+            AudioClip[] clips =
+                IsSprinting ? runSteps : walkSteps;
+
+            if (clips.Length > 0)
+            {
+                int i = Random.Range(0, clips.Length);
+                footstepSource.pitch = Random.Range(0.95f, 1.05f);
+                footstepSource.PlayOneShot(clips[i]);
+            }
+
+            stepTimer = interval;
         }
-        else
+    }
+
+    // ---------------- BREATHING ----------------
+    void HandleBreathing()
+    {
+        if (!breathingSource) return;
+
+        bool tired = currentStamina <= heavyBreathThreshold;
+
+        AudioClip target = null;
+
+        if (IsSprinting || tired)
+            target = tired ? heavyBreathing : lightBreathing;
+
+        if (!target)
         {
-            animator.SetFloat("Speed", 1f);
+            breathingSource.Stop();
+            return;
+        }
+
+        if (breathingSource.clip != target)
+        {
+            breathingSource.clip = target;
+            breathingSource.Play();
         }
     }
 }

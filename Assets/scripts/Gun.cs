@@ -4,43 +4,60 @@ using System.Collections;
 public class Gun : MonoBehaviour
 {
     public WeaponType weaponType;
+    [Header("UI")]
+    public Sprite weaponIcon;
+    [Header("Recoil")]
+    public float recoilUp = 2f;
+    public float recoilSide = 1f;
+    public float recoilKick = 0.05f;
 
     [Header("Stats")]
     public float damage = 10f;
     public float range = 100f;
-    public float fireRate = 12f;
+    public float fireRate = 5f;
     public float impactForce = 30f;
     public GameObject bloodPrefab;
+
+    [Header("Shotgun")]
+    public bool isShotgun = false;
+    public int pelletsPerShot = 8;
+    public float spread = 4f;
 
     [Header("References")]
     public Camera fpsCam;
     public ParticleSystem muzzleFlash;
     public Animator weaponAnimator;
 
-    [Header("Shoot Audio")]
+    [Header("Audio")]
     public AudioClip shootSound;
     public AudioClip emptyClickSound;
-    [Range(0f, 1f)] public float shootVolume = 0.4f;
-
-    [Header("Reload Audio")]
     public AudioClip reloadSound;
-    [Range(0f, 1f)] public float reloadVolume = 0.6f;
 
-    private AudioSource audioSource;
+    [Range(0f, 1f)] public float shootVolume = 0.4f;
+    [Range(0f, 1f)] public float reloadVolume = 0.6f;
 
     [Header("Ammo")]
     public int maxAmmo = 30;
     public int currentAmmo;
     public float reloadTime = 1.6f;
 
+    private AudioSource audioSource;
+
     private bool isReloading = false;
+    private Coroutine reloadRoutine;
     private float nextTimeToFire = 0f;
+
+    private Vector3 originalCamLocalPos;
+
+    // ------------------------------------------------
 
     void Start()
     {
-        if (!fpsCam) fpsCam = Camera.main;
+        if (!fpsCam)
+            fpsCam = Camera.main;
 
         audioSource = GetComponent<AudioSource>();
+
         if (!audioSource)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -48,29 +65,50 @@ public class Gun : MonoBehaviour
         }
 
         currentAmmo = maxAmmo;
+
+        if (fpsCam)
+            originalCamLocalPos = fpsCam.transform.localPosition;
     }
+
+    // ------------------------------------------------
 
     void Update()
     {
-        if (isReloading) return;
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            TryReload();
+        if (!gameObject.activeInHierarchy)
             return;
-        }
+
+        HandleInput();
+        RecoverCameraPosition();
+    }
+
+    // ------------------------------------------------
+    // INPUT
+    // ------------------------------------------------
+
+    void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+            TryReload();
 
         if (Input.GetMouseButton(0))
-        {
             TryShoot();
-        }
     }
+
+    // ------------------------------------------------
+    // SHOOT
+    // ------------------------------------------------
 
     void TryShoot()
     {
-        if (Time.time < nextTimeToFire) return;
+        if (isReloading)
+            return;
 
-        if (currentAmmo <= 0)
+        if (Time.time < nextTimeToFire)
+            return;
+
+        int ammoCost = isShotgun ? 2 : 1;
+
+        if (currentAmmo < ammoCost)
         {
             if (emptyClickSound)
                 audioSource.PlayOneShot(emptyClickSound, 0.6f);
@@ -78,12 +116,13 @@ public class Gun : MonoBehaviour
         }
 
         nextTimeToFire = Time.time + 1f / fireRate;
-        Shoot();
+
+        Shoot(ammoCost);
     }
 
-    void Shoot()
+    void Shoot(int ammoCost)
     {
-        currentAmmo--;
+        currentAmmo -= ammoCost;
 
         if (muzzleFlash)
             muzzleFlash.Play();
@@ -97,26 +136,80 @@ public class Gun : MonoBehaviour
             audioSource.PlayOneShot(shootSound, shootVolume);
         }
 
-        if (fpsCam)
+        ApplyRecoil();
+
+        if (isShotgun)
         {
-            fpsCam.transform.localRotation *= Quaternion.Euler(
-                Random.Range(-1.2f, -0.6f),
-                Random.Range(-0.3f, 0.3f),
-                0f
-            );
+            for (int i = 0; i < pelletsPerShot; i++)
+                ShootRay();
         }
+        else
+        {
+            ShootRay();
+        }
+    }
+
+    // ------------------------------------------------
+    // RECOIL (FIXED)
+    // ------------------------------------------------
+
+    void ApplyRecoil()
+    {
+        if (!fpsCam) return;
+
+        float vertical = Random.Range(recoilUp * 0.8f, recoilUp);
+        float horizontal = Random.Range(-recoilSide, recoilSide);
+
+        fpsCam.transform.localRotation *= Quaternion.Euler(
+            -vertical,
+            horizontal,
+            0f
+        );
+
+        // small kickback
+        fpsCam.transform.localPosition -= Vector3.forward * recoilKick;
+    }
+
+    void RecoverCameraPosition()
+    {
+        if (!fpsCam) return;
+
+        fpsCam.transform.localPosition =
+            Vector3.Lerp(
+                fpsCam.transform.localPosition,
+                originalCamLocalPos,
+                Time.deltaTime * 8f
+            );
+    }
+
+    // ------------------------------------------------
+    // RAYCAST
+    // ------------------------------------------------
+
+    void ShootRay()
+    {
+        Vector3 direction = fpsCam.transform.forward;
+
+        direction += fpsCam.transform.right *
+                     Random.Range(-spread, spread) * 0.01f;
+
+        direction += fpsCam.transform.up *
+                     Random.Range(-spread, spread) * 0.01f;
 
         RaycastHit hit;
-        if (Physics.Raycast(fpsCam.transform.position, fpsCam.transform.forward, out hit, range))
+
+        if (Physics.Raycast(fpsCam.transform.position,
+                            direction,
+                            out hit,
+                            range))
         {
-            // FIX: works even if collider is on child object
-            Enemyhealthscript enemyHit = hit.transform.GetComponentInParent<Enemyhealthscript>();
+            Enemyhealthscript enemy =
+                hit.transform.GetComponentInParent<Enemyhealthscript>();
 
-            if (enemyHit)
+            if (enemy)
             {
-                enemyHit.takeDamage(damage);
+                enemy.takeDamage(damage);
 
-                // ADDED: blood spawn
                 if (bloodPrefab)
                 {
                     Instantiate(
@@ -127,21 +220,27 @@ public class Gun : MonoBehaviour
                 }
             }
 
-            if (hit.rigidbody && enemyHit == null)
-            {
+            if (hit.rigidbody && enemy == null)
                 hit.rigidbody.AddForce(-hit.normal * impactForce);
-            }
         }
-
-        // AmmoUI.Instance.Update(currentAmmo, maxAmmo, weaponType);
     }
+
+    // ------------------------------------------------
+    // RELOAD (FULLY FIXED)
+    // ------------------------------------------------
 
     void TryReload()
     {
-        if (currentAmmo == maxAmmo) return;
-        if (isReloading) return;
+        if (isReloading)
+            return;
 
-        StartCoroutine(Reload());
+        if (currentAmmo >= maxAmmo)
+            return;
+
+        if (reloadRoutine != null)
+            StopCoroutine(reloadRoutine);
+
+        reloadRoutine = StartCoroutine(Reload());
     }
 
     IEnumerator Reload()
@@ -157,6 +256,8 @@ public class Gun : MonoBehaviour
         yield return new WaitForSeconds(reloadTime);
 
         currentAmmo = maxAmmo;
+
         isReloading = false;
+        reloadRoutine = null;
     }
 }

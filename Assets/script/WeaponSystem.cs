@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class WeaponSystem : MonoBehaviour
 {
+    // UIAmmo reference REMOVED
+
     [Header("Armsaks")]
     public GameObject armsakRifle;
     public GameObject armsakHandgun;
@@ -11,10 +13,10 @@ public class WeaponSystem : MonoBehaviour
     public Transform handgunPoint;
 
     [Header("Weapons under WeaponPoint (already placed)")]
-    public GameObject ak;       // AK prefab already child of riflePoint
-    public GameObject shotgun;  // Shotgun prefab already child of riflePoint
-    public GameObject handgun;  // Handgun prefab already child of handgunPoint
-    public GameObject sniper; 
+    public GameObject ak;
+    public GameObject shotgun;
+    public GameObject handgun;
+    public GameObject sniper;
 
     [Header("Camera")]
     public Camera cam;
@@ -23,14 +25,12 @@ public class WeaponSystem : MonoBehaviour
     bool hasAK;
     bool hasShotgun;
     bool hasHandgun;
-    bool hasSniper; 
-
+    bool hasSniper;
 
     GameObject currentWeapon;
 
     void Start()
     {
-        // Dölj allt från början
         armsakRifle.SetActive(false);
         armsakHandgun.SetActive(false);
 
@@ -79,7 +79,6 @@ public class WeaponSystem : MonoBehaviour
                 EquipSniper();
             }
 
-            // Dölj vapnet på marken
             hit.transform.gameObject.SetActive(false);
         }
     }
@@ -91,19 +90,16 @@ public class WeaponSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2) && hasShotgun) EquipShotgun();
         if (Input.GetKeyDown(KeyCode.Alpha3) && hasHandgun) EquipHandgun();
         if (Input.GetKeyDown(KeyCode.Alpha4) && hasSniper) EquipSniper();
-
     }
 
     // ---------------- EQUIP ----------------
     void ClearWeapons()
     {
-        // Dölj alla weapons under WeaponPoint
         ak.SetActive(false);
         shotgun.SetActive(false);
         handgun.SetActive(false);
         sniper.SetActive(false);
 
-        // Dölj Armsaks
         armsakRifle.SetActive(false);
         armsakHandgun.SetActive(false);
     }
@@ -121,7 +117,6 @@ public class WeaponSystem : MonoBehaviour
         ClearWeapons();
         armsakRifle.SetActive(true);
         shotgun.SetActive(true);
-        ak.SetActive(false);
         currentWeapon = shotgun;
     }
 
@@ -141,4 +136,10 @@ public class WeaponSystem : MonoBehaviour
         currentWeapon = sniper;
     }
 
+    // THIS is what UIAmmo will read
+    public Gun GetCurrentGun()
+    {
+        if (currentWeapon == null) return null;
+        return currentWeapon.GetComponentInChildren<Gun>();
+    }
 }

@@ -7,15 +7,33 @@ public class Flashlight : MonoBehaviour
 
     void Start()
     {
-        if (flashlight != null)
-            flashlight.enabled = false;
+        Debug.Log("Flashlight script started.");
+
+        if (flashlight == null)
+        {
+            Debug.LogError("Flashlight reference is NULL. Drag the Light into the inspector.");
+            return;
+        }
+
+        flashlight.enabled = false;
+        Debug.Log("Flashlight initialized OFF.");
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(toggleKey) && flashlight != null)
+        if (Input.GetKeyDown(toggleKey))
         {
+            Debug.Log("Toggle key pressed.");
+
+            if (flashlight == null)
+            {
+                Debug.LogError("Flashlight reference missing!");
+                return;
+            }
+
             flashlight.enabled = !flashlight.enabled;
+
+            Debug.Log("Flashlight state: " + flashlight.enabled);
         }
     }
 }

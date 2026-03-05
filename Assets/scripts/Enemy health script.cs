@@ -23,7 +23,7 @@ public class Enemyhealthscript : MonoBehaviour
         if (anim) anim.SetTrigger("Die");
 
         // stop movement script
-        var ai = GetComponent<zombiecontroller>();
+        var ai = GetComponent<ZombieController>();
         if (ai) ai.enabled = false;
 
         // stop navmesh if used
