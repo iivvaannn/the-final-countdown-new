@@ -15,8 +15,9 @@ public class WeaponSystem : MonoBehaviour
     [Header("Weapons under WeaponPoint (already placed)")]
     public GameObject ak;
     public GameObject shotgun;
-    public GameObject handgun;
+    public GameObject revolver;
     public GameObject sniper;
+    public GameObject handgun; 
 
     [Header("Camera")]
     public Camera cam;
@@ -24,8 +25,9 @@ public class WeaponSystem : MonoBehaviour
 
     bool hasAK;
     bool hasShotgun;
-    bool hasHandgun;
+    bool hasRevolver;
     bool hasSniper;
+    bool hasHandgun;
 
     GameObject currentWeapon;
 
@@ -36,8 +38,9 @@ public class WeaponSystem : MonoBehaviour
 
         ak.SetActive(false);
         shotgun.SetActive(false);
-        handgun.SetActive(false);
+        revolver.SetActive(false);
         sniper.SetActive(false);
+        handgun.SetActive(false);
     }
 
     void Update()
@@ -68,15 +71,20 @@ public class WeaponSystem : MonoBehaviour
                 hasShotgun = true;
                 EquipShotgun();
             }
-            else if (name.Contains("Handgun"))
+            else if (name.Contains("Revolver"))
             {
-                hasHandgun = true;
-                EquipHandgun();
+                hasRevolver = true;
+                EquipRevolver();
             }
             else if (name.Contains("Sniper"))
             {
                 hasSniper = true;
                 EquipSniper();
+            }
+            else if (name.Contains("Handgun"))
+            {
+                hasHandgun = true;
+                EquipHandgun();
             }
 
             hit.transform.gameObject.SetActive(false);
@@ -88,8 +96,9 @@ public class WeaponSystem : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1) && hasAK) EquipAK();
         if (Input.GetKeyDown(KeyCode.Alpha2) && hasShotgun) EquipShotgun();
-        if (Input.GetKeyDown(KeyCode.Alpha3) && hasHandgun) EquipHandgun();
+        if (Input.GetKeyDown(KeyCode.Alpha3) && hasRevolver) EquipRevolver();
         if (Input.GetKeyDown(KeyCode.Alpha4) && hasSniper) EquipSniper();
+        if (Input.GetKeyDown(KeyCode.Alpha5) && hasHandgun) EquipHandgun();
     }
 
     // ---------------- EQUIP ----------------
@@ -97,8 +106,9 @@ public class WeaponSystem : MonoBehaviour
     {
         ak.SetActive(false);
         shotgun.SetActive(false);
-        handgun.SetActive(false);
+        revolver.SetActive(false);
         sniper.SetActive(false);
+        handgun.SetActive(false);
 
         armsakRifle.SetActive(false);
         armsakHandgun.SetActive(false);
@@ -120,12 +130,12 @@ public class WeaponSystem : MonoBehaviour
         currentWeapon = shotgun;
     }
 
-    void EquipHandgun()
+    void EquipRevolver()
     {
         ClearWeapons();
         armsakHandgun.SetActive(true);
-        handgun.SetActive(true);
-        currentWeapon = handgun;
+        revolver.SetActive(true);
+        currentWeapon = revolver;
     }
 
     void EquipSniper()
@@ -134,6 +144,14 @@ public class WeaponSystem : MonoBehaviour
         armsakRifle.SetActive(true);
         sniper.SetActive(true);
         currentWeapon = sniper;
+    }
+
+    void EquipHandgun ()
+    {
+        ClearWeapons();
+        armsakHandgun.SetActive(true);
+        handgun.SetActive(true);
+        currentWeapon = handgun;
     }
 
     // THIS is what UIAmmo will read
