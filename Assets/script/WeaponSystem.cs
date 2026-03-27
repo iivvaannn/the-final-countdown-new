@@ -23,11 +23,18 @@ public class WeaponSystem : MonoBehaviour
     public Camera cam;
     public float pickupDistance = 3f;
 
-    bool hasAK;
-    bool hasShotgun;
-    bool hasRevolver;
-    bool hasSniper;
-    bool hasHandgun;
+    [Header("Inventory UI")]
+    public GameObject akIcon;
+    public GameObject shotgunIcon;
+    public GameObject revolverIcon;
+    public GameObject sniperIcon;
+    public GameObject handgunIcon;
+
+    public bool hasAK;
+    public bool hasShotgun;
+    public bool hasRevolver;
+    public bool hasSniper;
+    public bool hasHandgun;
 
     GameObject currentWeapon;
 
@@ -120,6 +127,7 @@ public class WeaponSystem : MonoBehaviour
         armsakRifle.SetActive(true);
         ak.SetActive(true);
         currentWeapon = ak;
+        akIcon.SetActive(true);
     }
 
     void EquipShotgun()
@@ -128,6 +136,7 @@ public class WeaponSystem : MonoBehaviour
         armsakRifle.SetActive(true);
         shotgun.SetActive(true);
         currentWeapon = shotgun;
+        shotgunIcon.SetActive(true);
     }
 
     void EquipRevolver()
@@ -136,6 +145,7 @@ public class WeaponSystem : MonoBehaviour
         armsakHandgun.SetActive(true);
         revolver.SetActive(true);
         currentWeapon = revolver;
+        revolverIcon.SetActive(true);
     }
 
     void EquipSniper()
@@ -144,6 +154,7 @@ public class WeaponSystem : MonoBehaviour
         armsakRifle.SetActive(true);
         sniper.SetActive(true);
         currentWeapon = sniper;
+        sniperIcon.SetActive(true);
     }
 
     void EquipHandgun ()
@@ -152,6 +163,7 @@ public class WeaponSystem : MonoBehaviour
         armsakHandgun.SetActive(true);
         handgun.SetActive(true);
         currentWeapon = handgun;
+        handgunIcon.SetActive(true);
     }
 
     // THIS is what UIAmmo will read
