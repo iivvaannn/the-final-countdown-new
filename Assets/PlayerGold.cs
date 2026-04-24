@@ -9,7 +9,7 @@ public class PlayerGold : MonoBehaviour
     void Update()
     {
         if (goldText != null)
-            goldText.text = gold + " $";
+            goldText.text = gold + " Gold";
     }
 
     public bool SpendGold(int amount)
