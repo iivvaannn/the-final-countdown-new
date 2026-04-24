@@ -19,18 +19,30 @@ public class Enemyhealthscript : MonoBehaviour
     {
         isDead = true;
 
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        if (player != null)
+        {
+            PlayerGold gold = player.GetComponent<PlayerGold>();
+
+            if (gold != null)
+            {
+                int reward = Random.Range(5, 15);
+                gold.AddGold(reward);
+
+                Debug.Log("Zombie killed ? +" + reward + " gold");
+            }
+        }
+
         Animator anim = GetComponent<Animator>();
         if (anim) anim.SetTrigger("Die");
 
-        // stop movement script
         var ai = GetComponent<ZombieController>();
         if (ai) ai.enabled = false;
 
-        // stop navmesh if used
         var agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
         if (agent) agent.enabled = false;
 
-        // kill rigidbody physics
         var rb = GetComponent<Rigidbody>();
         if (rb)
         {
