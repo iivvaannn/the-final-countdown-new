@@ -34,6 +34,6 @@ public class UIAmmo : MonoBehaviour
         ammoPanel.SetActive(true);
 
         weaponIcon.sprite = gun.weaponIcon;
-        ammoText.text = gun.currentAmmo + " / " + gun.maxAmmo;
+        ammoText.text = gun.currentAmmo + " / " + gun.reserveAmmo;
     }
 }

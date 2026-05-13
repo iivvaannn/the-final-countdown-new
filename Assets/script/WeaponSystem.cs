@@ -4,6 +4,9 @@ public class WeaponSystem : MonoBehaviour
 {
     // UIAmmo reference REMOVED
 
+    [Header("Idle Arms")]
+    public GameObject fpsArms;
+
     [Header("Armsaks")]
     public GameObject armsakRifle;
     public GameObject armsakHandgun;
@@ -17,7 +20,7 @@ public class WeaponSystem : MonoBehaviour
     public GameObject shotgun;
     public GameObject revolver;
     public GameObject sniper;
-    public GameObject handgun; 
+    public GameObject handgun;
 
     [Header("Camera")]
     public Camera cam;
@@ -40,6 +43,8 @@ public class WeaponSystem : MonoBehaviour
 
     void Start()
     {
+        fpsArms.SetActive(true);
+
         armsakRifle.SetActive(false);
         armsakHandgun.SetActive(false);
 
@@ -106,6 +111,12 @@ public class WeaponSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3) && hasRevolver) EquipRevolver();
         if (Input.GetKeyDown(KeyCode.Alpha4) && hasSniper) EquipSniper();
         if (Input.GetKeyDown(KeyCode.Alpha5) && hasHandgun) EquipHandgun();
+
+        // UNEQUIP
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            UnequipAll();
+        }
     }
 
     // ---------------- EQUIP ----------------
@@ -119,11 +130,15 @@ public class WeaponSystem : MonoBehaviour
 
         armsakRifle.SetActive(false);
         armsakHandgun.SetActive(false);
+
+        fpsArms.SetActive(true);
     }
 
     void EquipAK()
     {
         ClearWeapons();
+        fpsArms.SetActive(false);
+
         armsakRifle.SetActive(true);
         ak.SetActive(true);
         currentWeapon = ak;
@@ -133,6 +148,8 @@ public class WeaponSystem : MonoBehaviour
     void EquipShotgun()
     {
         ClearWeapons();
+        fpsArms.SetActive(false);
+
         armsakRifle.SetActive(true);
         shotgun.SetActive(true);
         currentWeapon = shotgun;
@@ -142,6 +159,8 @@ public class WeaponSystem : MonoBehaviour
     void EquipRevolver()
     {
         ClearWeapons();
+        fpsArms.SetActive(false);
+
         armsakHandgun.SetActive(true);
         revolver.SetActive(true);
         currentWeapon = revolver;
@@ -151,19 +170,30 @@ public class WeaponSystem : MonoBehaviour
     void EquipSniper()
     {
         ClearWeapons();
+        fpsArms.SetActive(false);
+
         armsakRifle.SetActive(true);
         sniper.SetActive(true);
         currentWeapon = sniper;
         sniperIcon.SetActive(true);
     }
 
-    void EquipHandgun ()
+    void EquipHandgun()
     {
         ClearWeapons();
+        fpsArms.SetActive(false);
+
         armsakHandgun.SetActive(true);
         handgun.SetActive(true);
         currentWeapon = handgun;
         handgunIcon.SetActive(true);
+    }
+
+    // ---------------- UNEQUIP ----------------
+    void UnequipAll()
+    {
+        ClearWeapons();
+        currentWeapon = null;
     }
 
     // THIS is what UIAmmo will read

@@ -4,8 +4,10 @@ using System.Collections;
 public class Gun : MonoBehaviour
 {
     public WeaponType weaponType;
+
     [Header("UI")]
     public Sprite weaponIcon;
+
     [Header("Recoil")]
     public float recoilUp = 2f;
     public float recoilSide = 1f;
@@ -39,7 +41,18 @@ public class Gun : MonoBehaviour
     [Header("Ammo")]
     public int maxAmmo = 30;
     public int currentAmmo;
+    public int reserveAmmo = 90;
     public float reloadTime = 1.6f;
+
+    // SNIPER ZOOM
+    [Header("Sniper Zoom")]
+    public bool isSniper = false;
+    public float sniperZoomFOV = 20f;
+    public float sniperZoomSpeed = 10f;
+
+    // ADDED
+    [Header("Sniper Aim Assist")]
+    public float sniperHitRadius = 0.5f;
 
     private AudioSource audioSource;
 
@@ -48,6 +61,7 @@ public class Gun : MonoBehaviour
     private float nextTimeToFire = 0f;
 
     private Vector3 originalCamLocalPos;
+    private float defaultFOV;
 
     // ------------------------------------------------
 
@@ -67,18 +81,51 @@ public class Gun : MonoBehaviour
         currentAmmo = maxAmmo;
 
         if (fpsCam)
+        {
             originalCamLocalPos = fpsCam.transform.localPosition;
+            defaultFOV = fpsCam.fieldOfView;
+        }
     }
 
     // ------------------------------------------------
 
     void Update()
     {
+        Debug.Log(gameObject.name + " update running");
+
         if (!gameObject.activeInHierarchy)
             return;
 
+        HandleSniperZoom();
         HandleInput();
         RecoverCameraPosition();
+    }
+
+    // ------------------------------------------------
+    // SNIPER ZOOM
+    // ------------------------------------------------
+
+    void HandleSniperZoom()
+    {
+        if (!isSniper || fpsCam == null)
+            return;
+
+        if (Input.GetMouseButton(1))
+        {
+            fpsCam.fieldOfView = Mathf.Lerp(
+                fpsCam.fieldOfView,
+                sniperZoomFOV,
+                Time.deltaTime * sniperZoomSpeed
+            );
+        }
+        else
+        {
+            fpsCam.fieldOfView = Mathf.Lerp(
+                fpsCam.fieldOfView,
+                defaultFOV,
+                Time.deltaTime * sniperZoomSpeed
+            );
+        }
     }
 
     // ------------------------------------------------
@@ -108,10 +155,12 @@ public class Gun : MonoBehaviour
 
         int ammoCost = isShotgun ? 2 : 1;
 
+        // NO AMMO
         if (currentAmmo < ammoCost)
         {
             if (emptyClickSound)
                 audioSource.PlayOneShot(emptyClickSound, 0.6f);
+
             return;
         }
 
@@ -122,6 +171,10 @@ public class Gun : MonoBehaviour
 
     void Shoot(int ammoCost)
     {
+        // EXTRA SAFETY
+        if (currentAmmo < ammoCost)
+            return;
+
         currentAmmo -= ammoCost;
 
         if (muzzleFlash)
@@ -136,6 +189,7 @@ public class Gun : MonoBehaviour
             audioSource.PlayOneShot(shootSound, shootVolume);
         }
 
+        // ONLY RECOIL IF ACTUALLY SHOOTING
         ApplyRecoil();
 
         if (isShotgun)
@@ -150,7 +204,7 @@ public class Gun : MonoBehaviour
     }
 
     // ------------------------------------------------
-    // RECOIL (FIXED)
+    // RECOIL
     // ------------------------------------------------
 
     void ApplyRecoil()
@@ -166,7 +220,6 @@ public class Gun : MonoBehaviour
             0f
         );
 
-        // small kickback
         fpsCam.transform.localPosition -= Vector3.forward * recoilKick;
     }
 
@@ -188,21 +241,39 @@ public class Gun : MonoBehaviour
 
     void ShootRay()
     {
-        Vector3 direction = fpsCam.transform.forward;
+        Ray ray = fpsCam.ViewportPointToRay(
+            new Vector3(0.5f, 0.5f, 0f)
+        );
 
-        direction += fpsCam.transform.right *
-                     Random.Range(-spread, spread) * 0.01f;
+        Vector3 direction = ray.direction;
 
-        direction += fpsCam.transform.up *
-                     Random.Range(-spread, spread) * 0.01f;
+        // NORMAL WEAPONS USE SPREAD
+        if (!isSniper || !Input.GetMouseButton(1))
+        {
+            direction += fpsCam.transform.right *
+                         Random.Range(-spread, spread) * 0.01f;
+
+            direction += fpsCam.transform.up *
+                         Random.Range(-spread, spread) * 0.01f;
+        }
 
         RaycastHit hit;
 
-        if (Physics.Raycast(fpsCam.transform.position,
-                            direction,
-                            out hit,
-                            range))
+        // SNIPER AIM ASSIST
+        float hitRadius = 0.08f;
+
+        if (isSniper && Input.GetMouseButton(1))
+            hitRadius = sniperHitRadius;
+
+        if (Physics.SphereCast(
+            ray.origin,
+            hitRadius,
+            direction,
+            out hit,
+            range))
         {
+            Debug.Log("Hit: " + hit.transform.name);
+
             Enemyhealthscript enemy =
                 hit.transform.GetComponentInParent<Enemyhealthscript>();
 
@@ -226,7 +297,7 @@ public class Gun : MonoBehaviour
     }
 
     // ------------------------------------------------
-    // RELOAD (FULLY FIXED)
+    // RELOAD
     // ------------------------------------------------
 
     void TryReload()
@@ -235,6 +306,10 @@ public class Gun : MonoBehaviour
             return;
 
         if (currentAmmo >= maxAmmo)
+            return;
+
+        // NO RESERVE AMMO
+        if (reserveAmmo <= 0)
             return;
 
         if (reloadRoutine != null)
@@ -255,7 +330,13 @@ public class Gun : MonoBehaviour
 
         yield return new WaitForSeconds(reloadTime);
 
-        currentAmmo = maxAmmo;
+        int ammoNeeded = maxAmmo - currentAmmo;
+
+        int ammoToLoad = Mathf.Min(ammoNeeded, reserveAmmo);
+
+        currentAmmo += ammoToLoad;
+
+        reserveAmmo -= ammoToLoad;
 
         isReloading = false;
         reloadRoutine = null;

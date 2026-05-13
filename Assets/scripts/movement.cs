@@ -12,8 +12,12 @@ public class Movement : MonoBehaviour
     [SerializeField] bool cursorLock = true;
     [SerializeField] float mouseSensitivity = 3.5f;
     [SerializeField] float Speed = 6.0f;
-    [SerializeField][Range(0.0f, 0.5f)] float moveSmoothTime = 0.15f;
-    [SerializeField] float gravity = -30f;
+
+    // CHANGED
+    [SerializeField][Range(0.0f, 0.5f)] float moveSmoothTime = 0.02f;
+
+    // CHANGED
+    [SerializeField] float gravity = -20f;
 
     [SerializeField] Animator animator;
 
@@ -202,13 +206,18 @@ public class Movement : MonoBehaviour
 
         float speed = flatVel.magnitude;
 
-        if (speed < 0.1f) animator.SetFloat("Speed", 0f);
-        else if (!IsSprinting) animator.SetFloat("Speed", 0.5f);
-        else animator.SetFloat("Speed", 1f);
+        if (speed < 0.1f)
+            animator.SetFloat("Speed", 0f);
+        else if (!IsSprinting)
+            animator.SetFloat("Speed", 0.5f);
+        else
+            animator.SetFloat("Speed", 1f);
+
+        // ADDED
+        HandleCameraBob();
 
         HandleFootsteps(speed);
         HandleBreathing();
-       
     }
 
     // ---------------- HEAD BOB ----------------
@@ -217,17 +226,19 @@ public class Movement : MonoBehaviour
         if (!isGrounded)
             return;
 
-        float moveAmount =
-            Mathf.Abs(Input.GetAxisRaw("Horizontal")) +
-            Mathf.Abs(Input.GetAxisRaw("Vertical"));
+        bool moving = currentDir.magnitude > 0.1f;
 
-        if (moveAmount < 0.1f)
+        if (!moving)
         {
             bobTimer = 0f;
+
             playerCamera.localPosition =
-                Vector3.Lerp(playerCamera.localPosition,
-                cameraStartPos,
-                Time.deltaTime * 6f);
+                Vector3.Lerp(
+                    playerCamera.localPosition,
+                    cameraStartPos,
+                    Time.deltaTime * 8f
+                );
+
             return;
         }
 
@@ -238,28 +249,44 @@ public class Movement : MonoBehaviour
 
         float bobY = Mathf.Sin(bobTimer) * amount;
 
-        playerCamera.localPosition =
+        Vector3 targetPos =
             cameraStartPos + new Vector3(0f, bobY, 0f);
+
+        playerCamera.localPosition =
+            Vector3.Lerp(
+                playerCamera.localPosition,
+                targetPos,
+                Time.deltaTime * 10f
+            );
     }
 
     // ---------------- FOOTSTEPS ----------------
     void HandleFootsteps(float speed)
     {
-        if (!isGrounded) return;
+        if (!isGrounded)
+        {
+            footstepSource.Stop();
+            return;
+        }
 
-        bool moving = speed > 0.1f;
+        bool moving = currentDir.magnitude > 0.1f;
 
         if (!moving)
         {
-            stepTimer = 0;
+            stepTimer = 0f;
+
+            if (footstepSource.isPlaying)
+                footstepSource.Stop();
+
             return;
         }
 
         stepTimer -= Time.deltaTime;
 
-        float interval = IsSprinting ? runStepTime : walkStepTime;
+        float interval =
+            IsSprinting ? runStepTime : walkStepTime;
 
-        if (stepTimer <= 0f && !footstepSource.isPlaying)
+        if (stepTimer <= 0f)
         {
             AudioClip[] clips =
                 IsSprinting ? runSteps : walkSteps;
@@ -267,8 +294,13 @@ public class Movement : MonoBehaviour
             if (clips.Length > 0)
             {
                 int i = Random.Range(0, clips.Length);
-                footstepSource.pitch = Random.Range(0.95f, 1.05f);
-                footstepSource.PlayOneShot(clips[i]);
+
+                footstepSource.pitch =
+                    Random.Range(0.95f, 1.05f);
+
+                // IMPORTANT
+                footstepSource.clip = clips[i];
+                footstepSource.Play();
             }
 
             stepTimer = interval;
@@ -278,24 +310,32 @@ public class Movement : MonoBehaviour
     // ---------------- BREATHING ----------------
     void HandleBreathing()
     {
-        if (!breathingSource) return;
-
-        bool tired = currentStamina <= heavyBreathThreshold;
+        if (!breathingSource)
+            return;
 
         AudioClip target = null;
 
-        if (IsSprinting || tired)
-            target = tired ? heavyBreathing : lightBreathing;
-
-        if (!target)
+        if (currentStamina <= heavyBreathThreshold)
         {
-            breathingSource.Stop();
+            target = heavyBreathing;
+        }
+        else if (IsSprinting)
+        {
+            target = lightBreathing;
+        }
+
+        if (target == null)
+        {
+            if (breathingSource.isPlaying)
+                breathingSource.Stop();
+
             return;
         }
 
         if (breathingSource.clip != target)
         {
             breathingSource.clip = target;
+            breathingSource.loop = true;
             breathingSource.Play();
         }
     }
