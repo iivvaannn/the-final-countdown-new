@@ -4,7 +4,7 @@ public class Enemyhealthscript : MonoBehaviour
 {
     public float health = 100f;
     bool isDead = false;
-
+    int currentDay = 1;
     public void takeDamage(float amount)
     {
         if (isDead) return;
@@ -14,7 +14,20 @@ public class Enemyhealthscript : MonoBehaviour
         if (health <= 0f)
             die();
     }
+    void Start()
+    {
+        currentDay = LightingManager.Instance.CurrentDay;
+        ScaleHealth();
+    }
 
+    void ScaleHealth()
+    {
+        float multiplier = 1f + (currentDay - 1) * 0.5f;
+
+        health *= multiplier;
+
+        Debug.Log("Zombie HP scaled | Day: " + currentDay + " | HP: " + health);
+    }
     void die()
     {
         isDead = true;

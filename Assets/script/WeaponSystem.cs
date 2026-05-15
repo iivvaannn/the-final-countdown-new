@@ -4,6 +4,12 @@ public class WeaponSystem : MonoBehaviour
 {
     // UIAmmo reference REMOVED
 
+    public GameObject knife;
+    public GameObject armsakKnife;
+   // public GameObject knifeIcon;
+
+    public bool hasKnife;
+
     [Header("Idle Arms")]
     public GameObject fpsArms;
 
@@ -47,6 +53,12 @@ public class WeaponSystem : MonoBehaviour
 
         armsakRifle.SetActive(false);
         armsakHandgun.SetActive(false);
+
+        knife.SetActive(false);
+        armsakKnife.SetActive(false);
+
+     //   if (knifeIcon != null)
+       //     knifeIcon.SetActive(false);
 
         ak.SetActive(false);
         shotgun.SetActive(false);
@@ -98,6 +110,11 @@ public class WeaponSystem : MonoBehaviour
                 hasHandgun = true;
                 EquipHandgun();
             }
+            else if (name.Contains("Knife"))
+            {
+                hasKnife = true;
+                EquipKnife();
+            }
 
             hit.transform.gameObject.SetActive(false);
         }
@@ -106,11 +123,12 @@ public class WeaponSystem : MonoBehaviour
     // ---------------- SWITCH ----------------
     void HandleSwitch()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1) && hasAK) EquipAK();
-        if (Input.GetKeyDown(KeyCode.Alpha2) && hasShotgun) EquipShotgun();
-        if (Input.GetKeyDown(KeyCode.Alpha3) && hasRevolver) EquipRevolver();
-        if (Input.GetKeyDown(KeyCode.Alpha4) && hasSniper) EquipSniper();
-        if (Input.GetKeyDown(KeyCode.Alpha5) && hasHandgun) EquipHandgun();
+        if (Input.GetKeyDown(KeyCode.Alpha1) && hasKnife) EquipKnife();
+        if (Input.GetKeyDown(KeyCode.Alpha2) && hasAK) EquipAK();
+        if (Input.GetKeyDown(KeyCode.Alpha3) && hasShotgun) EquipShotgun();
+        if (Input.GetKeyDown(KeyCode.Alpha4) && hasRevolver) EquipRevolver();
+        if (Input.GetKeyDown(KeyCode.Alpha5) && hasSniper) EquipSniper();
+        if (Input.GetKeyDown(KeyCode.Alpha6) && hasHandgun) EquipHandgun();
 
         // UNEQUIP
         if (Input.GetKeyDown(KeyCode.X))
@@ -132,6 +150,17 @@ public class WeaponSystem : MonoBehaviour
         armsakHandgun.SetActive(false);
 
         fpsArms.SetActive(true);
+
+        knife.SetActive(false);
+        armsakKnife.SetActive(false);
+
+
+        if (akIcon != null) akIcon.SetActive(false);
+        if (shotgunIcon != null) shotgunIcon.SetActive(false);
+        if (revolverIcon != null) revolverIcon.SetActive(false);
+        if (sniperIcon != null) sniperIcon.SetActive(false);
+        if (handgunIcon != null) handgunIcon.SetActive(false);
+      //  if (knifeIcon != null) knifeIcon.SetActive(false);
     }
 
     void EquipAK()
@@ -187,6 +216,20 @@ public class WeaponSystem : MonoBehaviour
         handgun.SetActive(true);
         currentWeapon = handgun;
         handgunIcon.SetActive(true);
+    }
+
+    void EquipKnife()
+    {
+        ClearWeapons();
+        fpsArms.SetActive(false);
+
+        armsakKnife.SetActive(true);
+        knife.SetActive(true);
+
+        currentWeapon = knife;
+
+      //  if (knifeIcon != null)
+        //    knifeIcon.SetActive(true);
     }
 
     // ---------------- UNEQUIP ----------------

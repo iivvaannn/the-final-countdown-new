@@ -25,6 +25,7 @@ public class ShopDialogue : MonoBehaviour
     {
         dialogueUI.SetActive(false);
         shop.OpenShop();
+
     }
 
     public void Quit()

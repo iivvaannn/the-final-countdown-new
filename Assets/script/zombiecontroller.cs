@@ -11,6 +11,10 @@ public class ZombieController : MonoBehaviour
     NavMeshAgent agent;
     AudioSource audioSource;
 
+    // ================= ATTACK CHANGE PER DAY =================
+
+    int currentDay = 1;
+
     // ================= DETECTION =================
 
     [Header("Detection")]
@@ -75,6 +79,9 @@ public class ZombieController : MonoBehaviour
         agent.updateRotation = false;
 
         StartCoroutine(IdleGroans());
+
+        currentDay = LightingManager.Instance.CurrentDay;
+        ScaleDamage();
     }
 
     void Update()
@@ -301,5 +308,30 @@ public class ZombieController : MonoBehaviour
             audioSource.PlayOneShot(deathSound);
 
         Destroy(gameObject, 5f);
+    }
+
+    void ScaleDamage()
+    {
+        float multiplier = 1f + (currentDay - 1) * 0.3f;
+
+        attackDamage *= multiplier;
+
+        Debug.Log("Zombie DAMAGE scaled | Day: " + currentDay + " | Damage: " + attackDamage);
+    }
+
+    void OnEnable()
+    {
+        LightingManager.OnDayStart += OnNewDay;
+    }
+
+    void OnDisable()
+    {
+        LightingManager.OnDayStart -= OnNewDay;
+    }
+
+    void OnNewDay()
+    {
+        currentDay = LightingManager.Instance.CurrentDay;
+        ScaleDamage();
     }
 }
