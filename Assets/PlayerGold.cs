@@ -3,7 +3,7 @@ using TMPro;
 
 public class PlayerGold : MonoBehaviour
 {
-    public int gold = 100;
+    public int gold = 2000;
     public TMP_Text goldText;
 
     void Update()

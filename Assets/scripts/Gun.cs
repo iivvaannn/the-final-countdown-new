@@ -13,6 +13,9 @@ public class Gun : MonoBehaviour
     public float recoilSide = 1f;
     public float recoilKick = 0.05f;
 
+    [Header("Recoil Recovery")]
+    public float recoilRecoverySpeed = 8f;
+
     [Header("Stats")]
     public float damage = 10f;
     public float range = 100f;
@@ -231,7 +234,7 @@ public class Gun : MonoBehaviour
             Vector3.Lerp(
                 fpsCam.transform.localPosition,
                 originalCamLocalPos,
-                Time.deltaTime * 8f
+                Time.deltaTime * recoilRecoverySpeed
             );
     }
 

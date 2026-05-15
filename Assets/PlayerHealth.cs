@@ -14,8 +14,8 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Slider healthSlider;
 
     [Header("Health")]
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float currentHealth;
+    [SerializeField] public float maxHealth = 100f;
+    [SerializeField] public float currentHealth;
     [Header("Blood Overlay")]
     [SerializeField] private Image bloodOverlay;
     [SerializeField] private float bloodFadeSpeed = 2f;
@@ -81,7 +81,7 @@ public class PlayerHealth : MonoBehaviour
 
                 if (medkit != null)
                 {
-                    medkit.HealPlayer(this);
+                    medkit.UseMedkit();
                 }
             }
         }

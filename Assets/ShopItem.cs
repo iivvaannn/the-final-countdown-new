@@ -91,18 +91,70 @@ public class ShopItem : MonoBehaviour
 
     void GiveAmmo()
     {
-        Gun gun = weaponSystem.GetCurrentGun();
+        Gun[] guns = FindObjectsOfType<Gun>(true);
 
-        if (gun != null)
+        foreach (Gun gun in guns)
         {
-            gun.currentAmmo += amount;
-            Debug.Log("Ammo added: " + amount);
+            switch (weaponType)
+            {
+                // AK ammo
+                case "AK":
+
+                    if (gun.gameObject.name.Contains("AK"))
+                    {
+                        gun.reserveAmmo += amount;
+                        Debug.Log("AK ammo added");
+                    }
+
+                    break;
+
+                // Shotgun ammo
+                case "Shotgun":
+
+                    if (gun.gameObject.name.Contains("Shotgun"))
+                    {
+                        gun.reserveAmmo += amount;
+                        Debug.Log("Shotgun ammo added");
+                    }
+
+                    break;
+
+                // Sniper ammo
+                case "Sniper":
+
+                    if (gun.gameObject.name.Contains("Sniper"))
+                    {
+                        gun.reserveAmmo += amount;
+                        Debug.Log("Sniper ammo added");
+                    }
+
+                    break;
+
+                // Handgun + Revolver share ammo
+                case "Handgun":
+
+                    if (gun.gameObject.name.Contains("Handgun") ||
+                        gun.gameObject.name.Contains("Revolver"))
+                    {
+                        gun.reserveAmmo += amount;
+                        Debug.Log("Handgun ammo added");
+                    }
+
+                    break;
+            }
         }
     }
 
     void GiveMedkit()
     {
-        Debug.Log("Medkit added (koppla till health senare)");
+        Medkit medkit = FindObjectOfType<Medkit>();
+
+        if (medkit != null)
+        {
+            medkit.AddMedkits(amount);
+
+            Debug.Log("Medkit added: " + amount);
+        }
     }
 
     bool IsOwned()
