@@ -13,10 +13,8 @@ public class Movement : MonoBehaviour
     [SerializeField] float mouseSensitivity = 3.5f;
     [SerializeField] float Speed = 6.0f;
 
-    // CHANGED
     [SerializeField][Range(0.0f, 0.5f)] float moveSmoothTime = 0.02f;
 
-    // CHANGED
     [SerializeField] float gravity = -20f;
 
     [SerializeField] Animator animator;
@@ -213,11 +211,28 @@ public class Movement : MonoBehaviour
         else
             animator.SetFloat("Speed", 1f);
 
-        // ADDED
         HandleCameraBob();
 
         HandleFootsteps(speed);
         HandleBreathing();
+    }
+
+    // ---------------- STAMINA USE ----------------
+    public bool UseStamina(float amount)
+    {
+        if (currentStamina < amount)
+            return false;
+
+        currentStamina -= amount;
+
+        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+        if (staminaSlider)
+            staminaSlider.value = currentStamina;
+
+        lastSprintTime = Time.time;
+
+        return true;
     }
 
     // ---------------- HEAD BOB ----------------
@@ -298,7 +313,6 @@ public class Movement : MonoBehaviour
                 footstepSource.pitch =
                     Random.Range(0.95f, 1.05f);
 
-                // IMPORTANT
                 footstepSource.clip = clips[i];
                 footstepSource.Play();
             }

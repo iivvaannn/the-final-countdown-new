@@ -15,12 +15,12 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 0
-  m_FogColor: {r: 0.6862671, g: 0.7091431, b: 0.7352874, a: 1}
+  m_FogColor: {r: 0.49019158, g: 0.5196035, b: 0.55881953, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.7693063, g: 0.71495545, b: 0.6421633, a: 1}
+  m_AmbientSkyColor: {r: 0.6554398, g: 0.5423415, b: 0.4024949, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1.03
@@ -159,8 +159,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sun: {fileID: 705507994}
   Preset: {fileID: 11400000, guid: 1341127812709404ea81cab799c21539, type: 2}
-  TimeOfDay: 10
-  CurrentDay: 1
+  TimeOfDay: 6
+  CurrentDay: 3
   dayStart: 6
   nightStart: 18
   CurrentState: 0
@@ -1482,7 +1482,7 @@ MonoBehaviour:
   currentHealth: 100
   bloodOverlay: {fileID: 296444813}
   bloodFadeSpeed: 1
-  bloodIntensityPerHit: 0.3
+  bloodIntensityPerHit: 0.2
   healthBar: {fileID: 1400991740}
 --- !u!114 &330806569
 MonoBehaviour:
@@ -2332,6 +2332,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 54a5574161afc764fbcc49dab1c73d6c, type: 3}
   m_PrefabInstance: {fileID: 1060370716}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &600356201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600356196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a503b69967adc48a6368d595f7ced2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swingSpeed: 8
+  attackCooldown: 0.5
+  staminaCost: 5
+  knifeRange: 1.5
+  knifeDamage: 7.5
+  bloodPrefab: {fileID: 0}
+  playerCamera: {fileID: 0}
+  leftSlashSound: {fileID: 0}
+  rightSlashSound: {fileID: 0}
+  stabSound: {fileID: 0}
+  slashVolume: 0.7
 --- !u!1 &640330002
 GameObject:
   m_ObjectHideFlags: 0
@@ -2782,7 +2805,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.9418569, b: 0.89017415, a: 1}
+  m_Color: {r: 1, g: 0.8255814, b: 0.67054254, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -2841,7 +2864,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0435779, y: 0.86272997, z: -0.49809733, w: 0.07547914}
+  m_LocalRotation: {x: 0, y: 0.9961947, z: 0, w: 0.087155804}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4406,7 +4429,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 54a5574161afc764fbcc49dab1c73d6c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1168890722}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 54a5574161afc764fbcc49dab1c73d6c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 600356201}
   m_SourcePrefab: {fileID: 100100000, guid: 54a5574161afc764fbcc49dab1c73d6c, type: 3}
 --- !u!1 &1065015998
 GameObject:
@@ -4843,6 +4869,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1168890722}
+  - component: {fileID: 1168890723}
   m_Layer: 0
   m_Name: KnifePoint
   m_TagString: Untagged
@@ -4866,6 +4893,29 @@ Transform:
   - {fileID: 1710241243}
   m_Father: {fileID: 600356197}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1168890723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1168890721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a503b69967adc48a6368d595f7ced2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  swingSpeed: 8
+  attackCooldown: 0.5
+  staminaCost: 5
+  knifeRange: 1.5
+  knifeDamage: 7.5
+  bloodPrefab: {fileID: 2337732449660134219, guid: 3eb8e185a67834b4a9310577b7e85755, type: 3}
+  playerCamera: {fileID: 963194227}
+  leftSlashSound: {fileID: 8300000, guid: 3af513578a4463d488d5890e3e71d7ad, type: 3}
+  rightSlashSound: {fileID: 8300000, guid: e8359a21f0bf31f4c8ea2e307fada0fd, type: 3}
+  stabSound: {fileID: 8300000, guid: c9efce5a71f25ac439724fe61a1dec41, type: 3}
+  slashVolume: 0.452
 --- !u!1 &1179398030
 GameObject:
   m_ObjectHideFlags: 0
@@ -6729,7 +6779,7 @@ MonoBehaviour:
   damage: 25
   range: 2
   cam: {fileID: 963194227}
-  cooldown: 0.5
+  cooldown: 1
 --- !u!1 &1724159396
 GameObject:
   m_ObjectHideFlags: 0
@@ -16504,55 +16554,55 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.106316976
+      value: 0.085017435
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.106317
+      value: 0.08501746
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.10631701
+      value: 0.085017465
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.32199872
+      value: 0.30058977
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.0330095
+      value: -0.051517036
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.47996992
+      value: 0.42977637
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.4269929
+      value: 0.41212097
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.32166326
+      value: -0.38124064
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.5665867
+      value: -0.6208102
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.62704813
+      value: 0.54718065
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 25.84
+      value: 21.417
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -80.34
+      value: -93.788
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 89.574
+      value: 83.183
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 576dcc242eccb0a469d2058c26cca2da, type: 3}
       propertyPath: m_Name
@@ -21779,7 +21829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6875514434740533596, guid: ce3990ab85ecb2247a27603391b565a0, type: 3}
       propertyPath: health
-      value: 20
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7460859113141312629, guid: ce3990ab85ecb2247a27603391b565a0, type: 3}
       propertyPath: m_Name
