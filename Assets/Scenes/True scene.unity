@@ -160,7 +160,7 @@ MonoBehaviour:
   Sun: {fileID: 705507994}
   Preset: {fileID: 11400000, guid: 1341127812709404ea81cab799c21539, type: 2}
   TimeOfDay: 6
-  CurrentDay: 3
+  CurrentDay: 1
   dayStart: 6
   nightStart: 18
   CurrentState: 0
@@ -4916,53 +4916,6 @@ MonoBehaviour:
   rightSlashSound: {fileID: 8300000, guid: e8359a21f0bf31f4c8ea2e307fada0fd, type: 3}
   stabSound: {fileID: 8300000, guid: c9efce5a71f25ac439724fe61a1dec41, type: 3}
   slashVolume: 0.452
---- !u!1 &1179398030
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1179398032}
-  - component: {fileID: 1179398031}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1179398031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179398030}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae75c3ed335ad4f438fbb580470d5ec0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pressEText: {fileID: 0}
-  dialoguePanel: {fileID: 0}
-  shopPanel: {fileID: 0}
---- !u!4 &1179398032
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1179398030}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 342, y: 210.66667, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1193675458
 GameObject:
   m_ObjectHideFlags: 0
@@ -19165,7 +19118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2653275301419945189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20862,7 +20815,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &4934924287566390743
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -24478,5 +24431,4 @@ SceneRoots:
   - {fileID: 279599884}
   - {fileID: 739588631}
   - {fileID: 1121824445}
-  - {fileID: 1179398032}
   - {fileID: 1853062811}

@@ -3,52 +3,47 @@ using System.Collections;
 
 public class CaravanManager : MonoBehaviour
 {
-    [Header("Caravan")]
     public GameObject caravanPrefab;
     public Transform spawnPoint;
 
-    [Header("UI Image Alert")]
-    public GameObject alertImage; // din Canva image
-
-    GameObject currentCaravan;
+    public GameObject alertImage; // din UI image
 
     void OnEnable()
     {
-        LightingManager.OnDayStart += OnNewDay;
+        LightingManager.OnDayStart += CheckDay;
     }
 
     void OnDisable()
     {
-        LightingManager.OnDayStart -= OnNewDay;
+        LightingManager.OnDayStart -= CheckDay;
     }
 
-    void OnNewDay()
+    void CheckDay()
     {
         int day = LightingManager.Instance.CurrentDay;
 
-        // Spawnar var 3:e dag
+        Debug.Log("Checking day: " + day);
+
         if (day % 3 == 0)
         {
+            Debug.Log("CARAVAN ARRIVED!");
             SpawnCaravan();
-            StartCoroutine(ShowImage());
+            StartCoroutine(ShowImage()); // ?? DETTA SAKNADES
         }
     }
 
     void SpawnCaravan()
     {
-        if (currentCaravan != null)
-            Destroy(currentCaravan);
-
-        currentCaravan = Instantiate(caravanPrefab, spawnPoint.position, spawnPoint.rotation);
-        Debug.Log("Spawning caravan...");
-
-        // OPTIONAL: ta bort efter 60 sek
-        // Destroy(currentCaravan, 60f);
+        Instantiate(caravanPrefab, spawnPoint.position, spawnPoint.rotation);
     }
 
     IEnumerator ShowImage()
     {
-        if (alertImage == null) yield break;
+        if (alertImage == null)
+        {
+            Debug.LogError("alertImage är NULL");
+            yield break;
+        }
 
         alertImage.SetActive(true);
 

@@ -6,52 +6,52 @@ public class ShopUIManager : MonoBehaviour
     public GameObject dialoguePanel;
     public GameObject shopPanel;
 
-
     void Start()
     {
-        if (pressEText != null) pressEText.SetActive(false);
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
-        if (shopPanel != null) shopPanel.SetActive(false);
+        pressEText.SetActive(false);
+        dialoguePanel.SetActive(false);
+        shopPanel.SetActive(false);
     }
 
     public void ShowPrompt()
     {
-        if (pressEText != null) pressEText.SetActive(true);
+        if (pressEText == null)
+        {
+            Debug.LogError("pressEText är NULL");
+            return;
+        }
+
+        pressEText.SetActive(true);
     }
 
     public void HidePrompt()
     {
-        if (pressEText != null) pressEText.SetActive(false);
+        if (pressEText != null)
+            pressEText.SetActive(false);
     }
 
     public void OpenDialogue()
     {
-        if (pressEText != null) pressEText.SetActive(false);
+        pressEText.SetActive(false);
 
-        if (dialoguePanel != null) dialoguePanel.SetActive(true);
-        if (shopPanel != null) shopPanel.SetActive(false);
+        dialoguePanel.SetActive(true);
+        shopPanel.SetActive(false);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
+
     public void OpenShop()
     {
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
-        if (shopPanel != null) shopPanel.SetActive(true);
-    }
-
-    public void CloseAll()
-    {
-        if (pressEText != null) pressEText.SetActive(false);
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
-        if (shopPanel != null) shopPanel.SetActive(false);
-
+        dialoguePanel.SetActive(false);
+        shopPanel.SetActive(true);
     }
 
     public void CloseAllUI()
     {
-        if (dialoguePanel != null) dialoguePanel.SetActive(false);
-        if (shopPanel != null) shopPanel.SetActive(false);
+        pressEText.SetActive(false);
+        dialoguePanel.SetActive(false);
+        shopPanel.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

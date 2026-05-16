@@ -7,7 +7,7 @@ public class ShopTrigger : MonoBehaviour
 
     void Start()
     {
-        uiManager = FindObjectOfType<ShopUIManager>();
+        uiManager = FindObjectOfType<ShopUIManager>(true); // ?? hittar även inactive
 
         if (uiManager == null)
             Debug.LogError("ShopUIManager hittades inte i scenen!");
@@ -17,8 +17,7 @@ public class ShopTrigger : MonoBehaviour
     {
         if (playerNear && Input.GetKeyDown(KeyCode.E))
         {
-            if (uiManager != null)
-                uiManager.OpenDialogue();
+            uiManager.OpenDialogue();
         }
     }
 
@@ -28,8 +27,7 @@ public class ShopTrigger : MonoBehaviour
 
         playerNear = true;
 
-        if (uiManager != null)
-            uiManager.ShowPrompt();
+        uiManager.ShowPrompt();
 
         Debug.Log("FORCE SHOW UI");
     }
@@ -40,7 +38,6 @@ public class ShopTrigger : MonoBehaviour
 
         playerNear = false;
 
-        if (uiManager != null)
-            uiManager.CloseAll();
+        uiManager.HidePrompt();
     }
 }
