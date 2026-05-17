@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using System.Collections;
 
 public class Gun : MonoBehaviour
@@ -41,6 +42,9 @@ public class Gun : MonoBehaviour
     [Range(0f, 1f)] public float shootVolume = 0.4f;
     [Range(0f, 1f)] public float reloadVolume = 0.6f;
 
+    // ADD THIS
+    public AudioMixerGroup mixerGroup;
+
     [Header("Ammo")]
     public int maxAmmo = 30;
     public int currentAmmo;
@@ -66,6 +70,9 @@ public class Gun : MonoBehaviour
     private Vector3 originalCamLocalPos;
     private float defaultFOV;
 
+    // ADDED
+    private float targetFOV;
+
     // ------------------------------------------------
 
     void Start()
@@ -81,12 +88,18 @@ public class Gun : MonoBehaviour
             audioSource.playOnAwake = false;
         }
 
+        // ADD THIS
+        if (mixerGroup != null)
+            audioSource.outputAudioMixerGroup = mixerGroup;
+
         currentAmmo = maxAmmo;
 
         if (fpsCam)
         {
             originalCamLocalPos = fpsCam.transform.localPosition;
+
             defaultFOV = fpsCam.fieldOfView;
+            targetFOV = defaultFOV;
         }
     }
 
@@ -115,20 +128,18 @@ public class Gun : MonoBehaviour
 
         if (Input.GetMouseButton(1))
         {
-            fpsCam.fieldOfView = Mathf.Lerp(
-                fpsCam.fieldOfView,
-                sniperZoomFOV,
-                Time.deltaTime * sniperZoomSpeed
-            );
+            targetFOV = sniperZoomFOV;
         }
         else
         {
-            fpsCam.fieldOfView = Mathf.Lerp(
-                fpsCam.fieldOfView,
-                defaultFOV,
-                Time.deltaTime * sniperZoomSpeed
-            );
+            targetFOV = defaultFOV;
         }
+
+        fpsCam.fieldOfView = Mathf.Lerp(
+            fpsCam.fieldOfView,
+            targetFOV,
+            sniperZoomSpeed * Time.deltaTime
+        );
     }
 
     // ------------------------------------------------
@@ -213,6 +224,10 @@ public class Gun : MonoBehaviour
     void ApplyRecoil()
     {
         if (!fpsCam) return;
+
+        // DISABLE RECOIL WHILE SCOPED
+        if (isSniper && Input.GetMouseButton(1))
+            return;
 
         float vertical = Random.Range(recoilUp * 0.8f, recoilUp);
         float horizontal = Random.Range(-recoilSide, recoilSide);

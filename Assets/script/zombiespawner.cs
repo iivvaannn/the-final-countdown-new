@@ -9,8 +9,8 @@ public class ZombieSpawner : MonoBehaviour
     public Transform player;
 
     [Header("Spawn Settings")]
-    public float spawnDistance = 60f;
-    public int baseRoamers = 6;
+    public float spawnDistance = 400f;
+    public int baseRoamers = 100;
     public int baseWaveSize = 10;
     public float waveSpawnDelay = 1.5f;
 
@@ -67,12 +67,12 @@ public class ZombieSpawner : MonoBehaviour
         ClearZombies();
 
         int day = LightingManager.Instance.CurrentDay;
-        int roamers = baseRoamers + day * 2;
+        int roamers = baseRoamers + day * 20;
 
         Debug.Log("Roaming Zombies: " + roamers);
 
         for (int i = 0; i < roamers; i++)
-            SpawnZombie();
+            SpawnZombieAnywhere();
     }
 
     // ================= NIGHT =================
@@ -88,20 +88,20 @@ public class ZombieSpawner : MonoBehaviour
         waveActive = true;
 
         int day = LightingManager.Instance.CurrentDay;
-        int waveSize = baseWaveSize + day * 5;
+        int waveSize = baseWaveSize + day * 10;
 
         Debug.Log("Night Wave Size: " + waveSize);
 
         for (int i = 0; i < waveSize; i++)
         {
-            SpawnZombie();
+            SpawnZombieNearPlayer();
             yield return new WaitForSeconds(waveSpawnDelay);
         }
     }
 
     // ================= SPAWNING =================
 
-    void SpawnZombie()
+    void SpawnZombieNearPlayer()
     {
         Vector2 circle =
             Random.insideUnitCircle.normalized * spawnDistance;
@@ -131,6 +131,43 @@ public class ZombieSpawner : MonoBehaviour
 
             GameObject zombie =
                 Instantiate(zombiePrefab, spawnPos, Quaternion.identity);
+
+            ZombieController z =
+                zombie.GetComponent<ZombieController>();
+
+            if (z != null)
+            {
+                z.player = player;
+                z.alwaysAggro = true;
+            }
+
+            aliveZombies.Add(zombie);
+        }
+    }
+
+    void SpawnZombieAnywhere()
+    {
+        float randomX = Random.Range(-950f, 400f);
+        float randomZ = Random.Range(-35f, 1450f);
+
+        Vector3 rayOrigin = new Vector3(
+            randomX,
+            player.position.y + 25f,
+            randomZ
+        );
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(rayOrigin, Vector3.down, out hit, 200f))
+        {
+            Vector3 spawnPos = hit.point;
+
+            GameObject zombie =
+                Instantiate(
+                    zombiePrefab,
+                    spawnPos,
+                    Quaternion.identity
+                );
 
             ZombieController z =
                 zombie.GetComponent<ZombieController>();

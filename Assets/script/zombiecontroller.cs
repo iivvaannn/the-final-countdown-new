@@ -24,6 +24,7 @@ public class ZombieController : MonoBehaviour
     public float groupAggroRadius = 20f;
 
     bool hasAggro;
+    public bool alwaysAggro;
 
     // ================= COMBAT =================
 
@@ -69,6 +70,7 @@ public class ZombieController : MonoBehaviour
         }
 
         audioSource = GetComponent<AudioSource>();
+
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
@@ -101,6 +103,12 @@ public class ZombieController : MonoBehaviour
 
     void HandleAggro()
     {
+        if (alwaysAggro)
+        {
+            hasAggro = true;
+            return;
+        }
+
         float distance =
             Vector3.Distance(transform.position, player.position);
 
@@ -235,6 +243,7 @@ public class ZombieController : MonoBehaviour
         if (dir.sqrMagnitude < 0.1f) return;
 
         Quaternion rot = Quaternion.LookRotation(dir);
+
         transform.rotation =
             Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * 6f);
     }
@@ -249,7 +258,7 @@ public class ZombieController : MonoBehaviour
         anim.SetTrigger("Attack");
 
         if (attackSound != null)
-            audioSource.PlayOneShot(attackSound);
+            audioSource.PlayOneShot(attackSound, 0.15f);
 
         yield return new WaitForSeconds(attackDelay);
 
@@ -286,7 +295,7 @@ public class ZombieController : MonoBehaviour
             yield return new WaitForSeconds(Random.Range(6f, 14f));
 
             if (!hasAggro && idleGroan != null)
-                audioSource.PlayOneShot(idleGroan);
+                audioSource.PlayOneShot(idleGroan, 0.18f);
         }
     }
 
@@ -305,18 +314,23 @@ public class ZombieController : MonoBehaviour
         anim.SetTrigger("Die");
 
         if (deathSound != null)
-            audioSource.PlayOneShot(deathSound);
+            audioSource.PlayOneShot(deathSound, 0.4f);
 
         Destroy(gameObject, 5f);
     }
 
     void ScaleDamage()
     {
-        float multiplier = 1f + (currentDay - 1) * 0.3f;
+        float multiplier = 1f + (currentDay - 1) * 0.15f;
 
         attackDamage *= multiplier;
 
-        Debug.Log("Zombie DAMAGE scaled | Day: " + currentDay + " | Damage: " + attackDamage);
+        Debug.Log(
+            "Zombie DAMAGE scaled | Day: " +
+            currentDay +
+            " | Damage: " +
+            attackDamage
+        );
     }
 
     void OnEnable()

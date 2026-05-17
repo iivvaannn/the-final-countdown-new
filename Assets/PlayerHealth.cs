@@ -56,14 +56,27 @@ public class PlayerHealth : MonoBehaviour
     {
         if (!bloodOverlay) return;
 
+        // GORE OFF
+        if (!AccessibilitySettings.goreEnabled)
+        {
+            Color hidden = bloodOverlay.color;
+            hidden.a = 0f;
+            bloodOverlay.color = hidden;
+            return;
+        }
+
         Color c = bloodOverlay.color;
 
-        c.a = Mathf.Lerp(c.a, targetBloodAlpha, Time.deltaTime * bloodFadeSpeed);
+        c.a = Mathf.Lerp(
+            c.a,
+            targetBloodAlpha,
+            Time.deltaTime * bloodFadeSpeed
+        );
 
         bloodOverlay.color = c;
 
-        // slowly recover
-        targetBloodAlpha = Mathf.Clamp01(targetBloodAlpha - Time.deltaTime * 0.15f);
+        targetBloodAlpha =
+            Mathf.Clamp01(targetBloodAlpha - Time.deltaTime * 0.15f);
     }
     void TryHeal()
     {
@@ -100,7 +113,8 @@ public class PlayerHealth : MonoBehaviour
 
         // ✅ play hurt sound
         if (hurtSound)
-            audioSource.PlayOneShot(hurtSound, hurtVolume);
+            Debug.Log("Hurt sound played");
+        audioSource.PlayOneShot(hurtSound, hurtVolume);
 
         // ✅ small camera hit reaction
         if (Camera.main)
@@ -114,6 +128,9 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            GameStats.survivedDays =
+                LightingManager.Instance.CurrentDay;
+
             SceneManager.LoadScene(
                 SceneManager.GetActiveScene().buildIndex + 1);
         }

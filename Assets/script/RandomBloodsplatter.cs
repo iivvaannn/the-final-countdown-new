@@ -6,6 +6,12 @@ public class RandomBloodMaterial : MonoBehaviour
 
     void Awake()
     {
+        if (!AccessibilitySettings.goreEnabled)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         ParticleSystemRenderer r = GetComponent<ParticleSystemRenderer>();
 
         if (r != null && bloodMaterials.Length > 0)

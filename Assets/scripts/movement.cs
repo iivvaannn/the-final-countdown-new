@@ -10,6 +10,7 @@ public class Movement : MonoBehaviour
     [SerializeField] Transform playerCamera;
     [SerializeField][Range(0.0f, 0.5f)] float mouseSmoothTime = 0.03f;
     [SerializeField] bool cursorLock = true;
+
     [SerializeField] float mouseSensitivity = 3.5f;
     [SerializeField] float Speed = 6.0f;
 
@@ -92,6 +93,13 @@ public class Movement : MonoBehaviour
 
         currentStamina = maxStamina;
 
+        // LOAD SAVED SENSITIVITY
+        mouseSensitivity =
+            PlayerPrefs.GetFloat(
+                "MouseSensitivity",
+                mouseSensitivity
+            );
+
         if (staminaSlider != null)
         {
             staminaSlider.maxValue = maxStamina;
@@ -103,6 +111,17 @@ public class Movement : MonoBehaviour
     {
         UpdateMouse();
         UpdateMove();
+    }
+
+    // ---------------- SENSITIVITY ----------------
+    public void SetSensitivity(float sensitivity)
+    {
+        mouseSensitivity = sensitivity;
+
+        PlayerPrefs.SetFloat(
+            "MouseSensitivity",
+            sensitivity
+        );
     }
 
     void UpdateMouse()
@@ -126,7 +145,10 @@ public class Movement : MonoBehaviour
     void UpdateMove()
     {
         Vector2 targetDir =
-            new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            new Vector2(
+                Input.GetAxisRaw("Horizontal"),
+                Input.GetAxisRaw("Vertical")
+            );
 
         targetDir.Normalize();
 
@@ -148,7 +170,10 @@ public class Movement : MonoBehaviour
         if (IsSprinting)
         {
             realSpeed = Speed * 1.6f;
-            currentStamina -= sprintStaminaDrain * Time.deltaTime;
+
+            currentStamina -=
+                sprintStaminaDrain * Time.deltaTime;
+
             lastSprintTime = Time.time;
 
             if (currentStamina <= 0f)
@@ -173,7 +198,9 @@ public class Movement : MonoBehaviour
             !staminaLocked &&
             currentStamina > 0f)
         {
-            velocityY = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            velocityY =
+                Mathf.Sqrt(jumpHeight * -2f * gravity);
+
             currentStamina -= jumpStaminaCost;
         }
 
@@ -189,18 +216,25 @@ public class Movement : MonoBehaviour
                 lastSprintTime = Time.time;
             }
         }
-        else if (!IsSprinting && Time.time > lastSprintTime + regenDelay)
+        else if (!IsSprinting &&
+                 Time.time > lastSprintTime + regenDelay)
         {
-            currentStamina += staminaRegen * Time.deltaTime;
+            currentStamina +=
+                staminaRegen * Time.deltaTime;
         }
 
-        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+        currentStamina =
+            Mathf.Clamp(currentStamina, 0, maxStamina);
 
         if (staminaSlider)
             staminaSlider.value = currentStamina;
 
         Vector3 flatVel =
-            new Vector3(controller.velocity.x, 0, controller.velocity.z);
+            new Vector3(
+                controller.velocity.x,
+                0,
+                controller.velocity.z
+            );
 
         float speed = flatVel.magnitude;
 
@@ -211,7 +245,7 @@ public class Movement : MonoBehaviour
         else
             animator.SetFloat("Speed", 1f);
 
-        HandleCameraBob();
+        HandleCameraBob(speed);
 
         HandleFootsteps(speed);
         HandleBreathing();
@@ -225,7 +259,8 @@ public class Movement : MonoBehaviour
 
         currentStamina -= amount;
 
-        currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+        currentStamina =
+            Mathf.Clamp(currentStamina, 0, maxStamina);
 
         if (staminaSlider)
             staminaSlider.value = currentStamina;
@@ -236,12 +271,12 @@ public class Movement : MonoBehaviour
     }
 
     // ---------------- HEAD BOB ----------------
-    void HandleCameraBob()
+    void HandleCameraBob(float speed)
     {
         if (!isGrounded)
             return;
 
-        bool moving = currentDir.magnitude > 0.1f;
+        bool moving = speed > 0.1f;
 
         if (!moving)
         {
@@ -257,15 +292,20 @@ public class Movement : MonoBehaviour
             return;
         }
 
-        float speed = IsSprinting ? runBobSpeed : walkBobSpeed;
-        float amount = IsSprinting ? runBobAmount : walkBobAmount;
+        float bobSpeed =
+            IsSprinting ? runBobSpeed : walkBobSpeed;
 
-        bobTimer += Time.deltaTime * speed;
+        float bobAmount =
+            IsSprinting ? runBobAmount : walkBobAmount;
 
-        float bobY = Mathf.Sin(bobTimer) * amount;
+        bobTimer += Time.deltaTime * bobSpeed;
+
+        float bobY =
+            Mathf.Sin(bobTimer) * bobAmount;
 
         Vector3 targetPos =
-            cameraStartPos + new Vector3(0f, bobY, 0f);
+            cameraStartPos +
+            new Vector3(0f, bobY, 0f);
 
         playerCamera.localPosition =
             Vector3.Lerp(

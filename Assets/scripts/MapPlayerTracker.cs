@@ -14,25 +14,34 @@ public class MapPlayerMarker : MonoBehaviour
     {
         marker = GetComponent<RectTransform>();
     }
-
     void Update()
     {
-        Debug.Log(player.position);
-        Debug.Log("Updating marker");
         Vector3 pos = player.position;
 
-        float percentX =
-            Mathf.InverseLerp(worldMin.x, worldMax.x, pos.x);
+        float normalizedX =
+            Mathf.InverseLerp(
+                worldMin.x,
+                worldMax.x,
+                pos.x
+            );
 
-        float percentY =
-            Mathf.InverseLerp(worldMin.y, worldMax.y, pos.z);
+        float normalizedZ =
+            Mathf.InverseLerp(
+                worldMin.y,
+                worldMax.y,
+                pos.z
+            );
 
-        percentX = Mathf.Clamp01(percentX);
-        percentY = Mathf.Clamp01(percentY);
+        float mapX =
+            -((normalizedX * mapRect.rect.width)
+            - (mapRect.rect.width / 2f));
 
-        float mapX = (percentX - 0.5f) * mapRect.rect.width;
-        float mapY = (percentY - 0.5f) * mapRect.rect.height;
+        float mapY =
+            (normalizedZ * mapRect.rect.height)
+            - (mapRect.rect.height / 2f);
 
-        marker.anchoredPosition = new Vector2(mapX, mapY);
+        mapY = -mapY;
+        marker.anchoredPosition =
+            new Vector2(mapX * 8f, mapY * 8f);
     }
 }

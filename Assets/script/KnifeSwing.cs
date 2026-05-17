@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using System.Collections;
 
 public class KnifeSwing : MonoBehaviour
@@ -27,6 +28,9 @@ public class KnifeSwing : MonoBehaviour
     [Range(0f, 1f)]
     public float slashVolume = 0.7f;
 
+    // ADD THIS
+    public AudioMixerGroup mixerGroup;
+
     private bool swinging = false;
 
     private Quaternion startRot;
@@ -52,6 +56,10 @@ public class KnifeSwing : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
         }
+
+        // ADD THIS
+        if (mixerGroup != null)
+            audioSource.outputAudioMixerGroup = mixerGroup;
 
         if (!playerCamera)
             playerCamera = Camera.main;

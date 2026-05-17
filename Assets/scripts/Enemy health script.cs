@@ -22,7 +22,7 @@ public class Enemyhealthscript : MonoBehaviour
 
     void ScaleHealth()
     {
-        float multiplier = 1f + (currentDay - 1) * 0.5f;
+        float multiplier = 1f + (currentDay - 1) * 0.2f;
 
         health *= multiplier;
 
@@ -40,7 +40,7 @@ public class Enemyhealthscript : MonoBehaviour
 
             if (gold != null)
             {
-                int reward = Random.Range(5, 15);
+                int reward = Random.Range(10, 20);
                 gold.AddGold(reward);
 
                 Debug.Log("Zombie killed ? +" + reward + " gold");
